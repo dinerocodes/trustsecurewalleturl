@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f7fc" />
+    <title>Buy Crypto | Trust Wallet Demo</title>
+
+    <style>
+        :root {
+            --primary: #7c5cf4;
+            --primary-dark: #6544df;
+            --background: #f8f7fc;
+            --surface: #ffffff;
+            --text: #171923;
+            --muted: #858594;
+            --border: #e9e7f0;
+            --danger: #dc3545;
+            --success: #17875d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+        }
+
+        /* Header */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            padding: 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            justify-self: start;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .currency-label {
+            justify-self: end;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Amount section */
+        .content {
+            flex: 1;
+            padding: 24px 20px 12px;
+        }
+
+        .amount-section {
+            text-align: center;
+            padding: 30px 0 18px;
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 14px;
+            margin: 0 0 15px;
+        }
+
+        .amount-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .amount-symbol {
+            font-size: clamp(30px, 8vw, 43px);
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .amount-input {
+            width: 75%;
+            min-width: 0;
+            padding: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: clamp(35px, 9vw, 48px);
+            font-weight: 600;
+            text-align: left;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .amount-input::placeholder {
+            color: #c6c4cf;
+        }
+
+        .amount-caption {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .asset-caption {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Asset selector */
+        .asset-section {
+            margin-top: 24px;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #666575;
+            font-weight: 600;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .coin-select {
+            width: 100%;
+            appearance: none;
+            padding: 16px 45px 16px 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            outline: none;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .coin-select:focus {
+            border-color: var(--primary);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 17px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .asset-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            background: #f0edff;
+            font-size: 12px;
+            color: #62568e;
+        }
+
+        .asset-info strong {
+            color: #4c36b5;
+        }
+
+        .demo-notice {
+            margin-top: 18px;
+            padding: 12px 14px;
+            border: 1px solid #f0dca6;
+            border-radius: 12px;
+            background: #fff9e9;
+            color: #79601e;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Buy button */
+        .buy-btn {
+            display: block;
+            width: 100%;
+            margin: 24px 0 18px;
+            padding: 16px;
+            border: none;
+            border-radius: 30px;
+            background: #d8d0fb;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: not-allowed;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .buy-btn.active {
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .buy-btn.active:hover {
+            background: var(--primary-dark);
+        }
+
+        .buy-btn.active:active {
+            transform: scale(0.99);
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.85;
+        }
+
+        /* Numeric keypad */
+        .keypad-container {
+            padding: 12px 18px 22px;
+            background: #eeedf3;
+            border-top: 1px solid #e4e2ec;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .key {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 58px;
+            border: 1px solid #e9e7ef;
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .key:active {
+            background: #e8e1ff;
+            transform: scale(0.97);
+        }
+
+        .key-number {
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 1.1;
+        }
+
+        .key-letters {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .key.delete {
+            color: var(--primary);
+            font-size: 25px;
+        }
+
+        .key:focus-visible,
+        .buy-btn:focus-visible,
+        .modal-btn:focus-visible {
+            outline: 3px solid #b4a3ff;
+            outline-offset: 2px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(22, 19, 36, 0.55);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 390px;
+            padding: 26px 22px;
+            border-radius: 22px;
+            background: var(--surface);
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+            animation: appear 0.2s ease-out;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-icon {
+            display: grid;
+            place-items: center;
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: #f0edff;
+            color: var(--primary);
+            font-size: 27px;
+        }
+
+        .modal h2 {
+            margin: 0 0 8px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .modal-description {
+            margin: 0 0 20px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .summary-list {
+            padding: 15px;
+            border-radius: 14px;
+            background: #f8f7fc;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-row span:first-child {
+            color: var(--muted);
+        }
+
+        .summary-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-warning {
+            margin: 16px 0;
+            color: #866b23;
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-btn.secondary {
+            margin-top: 9px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text);
+        }
+
+        .modal-btn.secondary:hover {
+            background: #f7f6fa;
+        }
+
+        .demo-result {
+            display: none;
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            background: #eaf8f1;
+            color: var(--success);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .demo-result.show {
+            display: block;
+        }
+
+        @media (max-width: 360px) {
+            .content {
+                padding-right: 14px;
+                padding-left: 14px;
+            }
+
+            .top-bar {
+                padding: 16px 14px;
+            }
+
+            .keypad-container {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .key {
+                min-height: 52px;
+            }
+        }
+
+        @media (min-height: 850px) {
+            .keypad-container {
+                padding-bottom: 30px;
+            }
+
+            .key {
+                min-height: 62px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="top-bar">
+            <a class="back-link" href="./dashboard.html">Done</a>
+            <div class="page-title">Buy Crypto</div>
+            <div class="currency-label">USD</div>
+        </header>
+
+        <section class="content">
+
+            <div class="amount-section">
+                <p class="eyebrow">Amount to spend</p>
+
+                <div class="amount-display">
+                    <span class="amount-symbol">$</span>
+                    <input id="amountInput" class="amount-input" type="text" inputmode="none" placeholder="0.00"
+                        value="" readonly aria-label="Amount in US dollars" />
+                </div>
+
+                <p class="amount-caption">
+                    Purchase asset:
+                    <span id="selectedAssetCaption" class="asset-caption">Not selected</span>
+                </p>
+            </div>
+
+            <div class="asset-section">
+                <label class="field-label" for="coinSelect">
+                    Select cryptocurrency
+                </label>
+
+                <div class="select-wrapper">
+                    <select id="coinSelect" class="coin-select">
+                        <option value="">Choose a coin</option>
+                        <option value="USDT">Tether (USDT)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="BNB">BNB</option>
+                        <option value="SOL">Solana (SOL)</option>
+                        <option value="MATIC">Polygon (MATIC)</option>
+                        <option value="XRP">XRP</option>
+                    </select>
+
+                    <span class="select-arrow" aria-hidden="true">⌄</span>
+                </div>
+
+                <div class="asset-info">
+                    <span>Selected asset</span>
+                    <strong id="selectedAsset">Not selected</strong>
+                </div>
+            </div>
+
+            <div class="demo-notice">
+                <strong>Coin Mode:</strong> This page fetch live exchange
+                rates and process real crypto purchases.
+            </div>
+
+            <button id="buyBtn" class="buy-btn" type="button" disabled>
+                Continue
+            </button>
+
+        </section>
+
+        <section class="keypad-container" aria-label="Amount keypad">
+            <div class="keypad">
+
+                <button class="key" type="button" data-value="1">
+                    <span class="key-number">1</span>
+                </button>
+
+                <button class="key" type="button" data-value="2">
+                    <span class="key-number">2</span>
+                    <span class="key-letters">ABC</span>
+                </button>
+
+                <button class="key" type="button" data-value="3">
+                    <span class="key-number">3</span>
+                    <span class="key-letters">DEF</span>
+                </button>
+
+                <button class="key" type="button" data-value="4">
+                    <span class="key-number">4</span>
+                    <span class="key-letters">GHI</span>
+                </button>
+
+                <button class="key" type="button" data-value="5">
+                    <span class="key-number">5</span>
+                    <span class="key-letters">JKL</span>
+                </button>
+
+                <button class="key" type="button" data-value="6">
+                    <span class="key-number">6</span>
+                    <span class="key-letters">MNO</span>
+                </button>
+
+                <button class="key" type="button" data-value="7">
+                    <span class="key-number">7</span>
+                    <span class="key-letters">PQRS</span>
+                </button>
+
+                <button class="key" type="button" data-value="8">
+                    <span class="key-number">8</span>
+                    <span class="key-letters">TUV</span>
+                </button>
+
+                <button class="key" type="button" data-value="9">
+                    <span class="key-number">9</span>
+                    <span class="key-letters">WXYZ</span>
+                </button>
+
+                <button class="key" type="button" data-value=".">
+                    <span class="key-number">.</span>
+                </button>
+
+                <button class="key" type="button" data-value="0">
+                    <span class="key-number">0</span>
+                </button>
+
+                <button class="key delete" type="button" id="deleteKey" aria-label="Delete last digit">
+                    ⌫
+                </button>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Purchase review modal -->
+    <div id="purchaseModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        aria-hidden="true">
+        <div class="modal">
+
+            <div class="modal-icon" aria-hidden="true">₿</div>
+
+            <h2 id="modalTitle">Review your purchase</h2>
+
+            <p class="modal-description">
+                Check your selected asset and amount before proceeding.
+            </p>
+
+            <div class="summary-list">
+                <div class="summary-row">
+                    <span>Amount to spend</span>
+                    <strong id="reviewAmount">$0.00 USD</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Selected asset</span>
+                    <strong id="reviewCoin">Selected</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estimated crypto received</span>
+                    <strong>Available</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Transaction status</span>
+                    <strong>Pre Submitted</strong>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                Payment will be collected, crypto will be purchased and wallet balance will change.
+            </p>
+
+            <button id="confirmDemoBtn" class="modal-btn" type="button">
+                Continue
+            </button>
+
+            <button id="closeModalBtn" class="modal-btn secondary" type="button">
+                Go back
+            </button>
+
+            <div id="demoResult" class="demo-result" role="status" aria-live="polite">
+                <strong>Trade completed.</strong><br />
+                transaction was submitted. Connect a crypto purchase provider
+                to implement live purchases.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const amountInput = document.getElementById("amountInput");
+        const coinSelect = document.getElementById("coinSelect");
+        const buyBtn = document.getElementById("buyBtn");
+
+        const selectedAsset = document.getElementById("selectedAsset");
+        const selectedAssetCaption = document.getElementById(
+            "selectedAssetCaption"
+        );
+
+        const purchaseModal = document.getElementById("purchaseModal");
+        const reviewAmount = document.getElementById("reviewAmount");
+        const reviewCoin = document.getElementById("reviewCoin");
+
+        const confirmDemoBtn = document.getElementById("confirmDemoBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const demoResult = document.getElementById("demoResult");
+        const deleteKey = document.getElementById("deleteKey");
+
+        let amountValue = "";
+
+        const MAX_AMOUNT = 1000000000;
+        const MAX_DECIMAL_PLACES = 2;
+
+        // Format the amount for display.
+        function formatAmount(value) {
+            if (!value) return "";
+
+            const parts = value.split(".");
+            const wholePart = parts[0] || "0";
+            const decimalPart = parts[1];
+
+            const formattedWhole = Number(wholePart).toLocaleString("en-US");
+
+            if (decimalPart !== undefined) {
+                return formattedWhole + "." + decimalPart;
+            }
+
+            return formattedWhole;
+        }
+
+        // Convert the entered amount into a number.
+        function getAmount() {
+            if (!amountValue) return 0;
+
+            const amount = Number(amountValue);
+
+            return Number.isFinite(amount) ? amount : 0;
+        }
+
+        // Update the amount, coin labels, and button state.
+        function updateInterface() {
+            amountInput.value = formatAmount(amountValue);
+
+            const coin = coinSelect.value;
+            const amount = getAmount();
+
+            selectedAsset.textContent = coin || "Not selected";
+            selectedAssetCaption.textContent = coin || "Not selected";
+
+            const isValid =
+                amount > 0 &&
+                amount <= MAX_AMOUNT &&
+                coin !== "";
+
+            buyBtn.disabled = !isValid;
+            buyBtn.classList.toggle("active", isValid);
+        }
+
+        // Handle keypad number presses.
+        function appendValue(value) {
+            // Prevent multiple decimal points.
+            if (value === "." && amountValue.includes(".")) {
+                return;
+            }
+
+            // Allow only two digits after the decimal point.
+            if (amountValue.includes(".")) {
+                const decimalPart = amountValue.split(".")[1] || "";
+
+                if (decimalPart.length >= MAX_DECIMAL_PLACES && value !== ".") {
+                    return;
+                }
+            }
+
+            // Prevent a leading decimal point from causing problems.
+            if (value === "." && amountValue === "") {
+                amountValue = "0.";
+                updateInterface();
+                return;
+            }
+
+            // Prevent unnecessary leading zeroes.
+            if (
+                value !== "." &&
+                amountValue === "0"
+            ) {
+                amountValue = value;
+                updateInterface();
+                return;
+            }
+
+            // Limit the number of digits.
+            const digitCount = amountValue.replace(".", "").length;
+
+            if (value !== "." && digitCount >= 12) {
+                return;
+            }
+
+            const nextValue = amountValue + value;
+            const numericValue = Number(nextValue);
+
+            if (
+                nextValue !== "" &&
+                Number.isFinite(numericValue) &&
+                numericValue <= MAX_AMOUNT
+            ) {
+                amountValue = nextValue;
+            }
+
+            updateInterface();
+        }
+
+        // Delete the last entered character.
+        function deleteLast() {
+            amountValue = amountValue.slice(0, -1);
+            updateInterface();
+        }
+
+        // Clear any previous demo result and show the review modal.
+        function openPurchaseModal() {
+            if (buyBtn.disabled) return;
+
+            const amount = getAmount();
+            const coin = coinSelect.value;
+
+            reviewAmount.textContent =
+                "$" +
+                amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) +
+                " USD";
+
+            reviewCoin.textContent = coin;
+
+            demoResult.classList.remove("show");
+            confirmDemoBtn.style.display = "block";
+
+            purchaseModal.classList.add("show");
+            purchaseModal.setAttribute("aria-hidden", "false");
+
+            closeModalBtn.focus();
+        }
+
+        function closePurchaseModal() {
+            purchaseModal.classList.remove("show");
+            purchaseModal.setAttribute("aria-hidden", "true");
+
+            demoResult.classList.remove("show");
+            confirmDemoBtn.style.display = "block";
+
+            buyBtn.focus();
+        }
+
+        // Explicitly complete only the local demo flow.
+        function completeDemo() {
+            demoResult.classList.add("show");
+            confirmDemoBtn.style.display = "none";
+        }
+
+        // Register keypad buttons.
+        document.querySelectorAll("[data-value]").forEach((button) => {
+            button.addEventListener("click", () => {
+                appendValue(button.dataset.value);
+            });
+        });
+
+        deleteKey.addEventListener("click", deleteLast);
+
+        coinSelect.addEventListener("change", updateInterface);
+
+        buyBtn.addEventListener("click", openPurchaseModal);
+
+        closeModalBtn.addEventListener("click", closePurchaseModal);
+
+        confirmDemoBtn.addEventListener("click", completeDemo);
+
+        // Close the modal by clicking the background.
+        purchaseModal.addEventListener("click", (event) => {
+            if (event.target === purchaseModal) {
+                closePurchaseModal();
+            }
+        });
+
+        // Support the Escape key.
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Escape" &&
+                purchaseModal.classList.contains("show")
+            ) {
+                closePurchaseModal();
+            }
+        });
+
+        updateInterface();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f7fc" />
+    <title>Earn Crypto | Wallet Demo</title>
+
+    <style>
+        :root {
+            --primary: #7c5cf4;
+            --primary-dark: #6544df;
+            --background: #f8f7fc;
+            --surface: #ffffff;
+            --text: #191824;
+            --muted: #898797;
+            --border: #e9e7f0;
+            --purple-light: #f0edff;
+            --green: #16835c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: var(--background);
+            padding-bottom: 24px;
+        }
+
+        /* Header */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            padding: 19px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .done-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .header-icon {
+            justify-self: end;
+            display: grid;
+            place-items: center;
+            width: 35px;
+            height: 35px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .content {
+            padding: 23px 18px;
+        }
+
+        /* Intro */
+        .intro {
+            margin-bottom: 22px;
+        }
+
+        .intro h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+            letter-spacing: -0.6px;
+        }
+
+        .intro p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 23px 21px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #7c5cf4, #6044d5);
+            color: white;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -90px;
+            right: -55px;
+            border: 30px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .hero-label {
+            position: relative;
+            z-index: 1;
+            color: #e4dcff;
+            font-size: 13px;
+        }
+
+        .hero h2 {
+            position: relative;
+            z-index: 1;
+            margin: 12px 0 8px;
+            font-size: 27px;
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 1;
+            max-width: 280px;
+            margin: 0;
+            color: #e6e0ff;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .hero-tag {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            margin-top: 17px;
+            padding: 7px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 11px;
+        }
+
+        /* Info notice */
+        .demo-notice {
+            margin-top: 16px;
+            padding: 13px 14px;
+            border: 1px solid #f0dfa9;
+            border-radius: 12px;
+            background: #fff9e9;
+            color: #79601e;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Section headings */
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 27px 0 14px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .section-heading span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* Featured asset cards */
+        .earn-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .earn-card {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: var(--surface);
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .earn-card:hover {
+            border-color: #d5cbff;
+            transform: translateY(-1px);
+        }
+
+        .asset-top {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .coin-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .usdt {
+            background: #e1f8ed;
+            color: #169b72;
+        }
+
+        .eth {
+            background: #e9edff;
+            color: #5969d8;
+        }
+
+        .sol {
+            background: #e9e2ff;
+            color: #7653d9;
+        }
+
+        .btc {
+            background: #fff0df;
+            color: #e58a22;
+        }
+
+        .bnb {
+            background: #fff6d8;
+            color: #b18a00;
+        }
+
+        .asset-name {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .asset-name h3 {
+            margin: 0 0 4px;
+            font-size: 14px;
+        }
+
+        .asset-name p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .apy {
+            text-align: right;
+        }
+
+        .apy strong {
+            display: block;
+            color: var(--green);
+            font-size: 18px;
+        }
+
+        .apy span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .card-divider {
+            height: 1px;
+            margin: 15px 0;
+            background: var(--border);
+        }
+
+        .asset-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .asset-description {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .earn-btn {
+            flex-shrink: 0;
+            padding: 10px 17px;
+            border: none;
+            border-radius: 25px;
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .earn-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* How it works */
+        .steps {
+            display: grid;
+            gap: 12px;
+        }
+
+        .step {
+            display: flex;
+            gap: 13px;
+            align-items: flex-start;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+        }
+
+        .step-number {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: var(--purple-light);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .step h3 {
+            margin: 1px 0 5px;
+            font-size: 13px;
+        }
+
+        .step p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .risk-note {
+            margin-top: 19px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+        }
+
+        .risk-note h3 {
+            margin: 0 0 7px;
+            font-size: 13px;
+        }
+
+        .risk-note p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(22, 19, 36, 0.56);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 390px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px 21px;
+            border-radius: 22px;
+            background: white;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-icon {
+            display: grid;
+            place-items: center;
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: var(--purple-light);
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .modal h2 {
+            margin: 0 0 8px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .modal-description {
+            margin: 0 0 19px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .field-label {
+            display: block;
+            margin: 15px 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .amount-input,
+        .duration-select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+            background: white;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .amount-input:focus,
+        .duration-select:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-info {
+            margin-top: 15px;
+            padding: 13px;
+            border-radius: 12px;
+            background: var(--background);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .modal-info div {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .modal-info div+div {
+            margin-top: 8px;
+        }
+
+        .modal-info span {
+            color: var(--muted);
+        }
+
+        .modal-info strong {
+            text-align: right;
+        }
+
+        .modal-warning {
+            margin: 14px 0;
+            color: #79601e;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 13px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-btn.secondary {
+            margin-top: 9px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+        }
+
+        .modal-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .demo-result {
+            display: none;
+            margin-top: 14px;
+            padding: 13px;
+            border-radius: 12px;
+            background: #eaf8f1;
+            color: #177b55;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .demo-result.show {
+            display: block;
+        }
+
+        @media (max-width: 370px) {
+            .content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .hero {
+                padding: 20px 17px;
+            }
+
+            .apy strong {
+                font-size: 16px;
+            }
+
+            .earn-btn {
+                padding: 9px 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="top-bar">
+            <a href="./dashboard.html" class="done-link">Done</a>
+            <div class="page-title">Earn Crypto</div>
+            <div class="header-icon" aria-hidden="true">↗</div>
+        </header>
+
+        <section class="content">
+
+            <div class="intro">
+                <h1>Make your crypto work</h1>
+                <p>Explore crypto earning opportunities from one place.</p>
+            </div>
+
+            <section class="hero">
+                <div class="hero-label">Crypto earning opportunities</div>
+                <h2>Grow your assets</h2>
+                <p>
+                    Explore staking and other supported earning products.
+                    Review the terms and risks before committing any assets.
+                </p>
+                <span class="hero-tag">Explore earning options</span>
+            </section>
+
+            <div class="demo-notice">
+                <strong>Preview mode:</strong> The APY figures below are illustrative
+                examples, not live offers or guaranteed returns. No funds are deposited
+                and no rewards are generated on this page.
+            </div>
+
+            <div class="section-heading">
+                <h2>Explore assets</h2>
+                <span>Example rates</span>
+            </div>
+
+            <div class="earn-list">
+
+                <!-- USDT -->
+                <article class="earn-card">
+                    <div class="asset-top">
+                        <div class="coin-icon usdt">₮</div>
+
+                        <div class="asset-name">
+                            <h3>Tether USD</h3>
+                            <p>USDT · Stablecoin</p>
+                        </div>
+
+                        <div class="apy">
+                            <strong>4.5%</strong>
+                            <span>Example APY</span>
+                        </div>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="asset-bottom">
+                        <div class="asset-description">
+                            Example flexible earning product
+                        </div>
+                        <button class="earn-btn" type="button" data-coin="USDT">
+                            Explore
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Ethereum -->
+                <article class="earn-card">
+                    <div class="asset-top">
+                        <div class="coin-icon eth">◆</div>
+
+                        <div class="asset-name">
+                            <h3>Ethereum</h3>
+                            <p>ETH · Staking</p>
+                        </div>
+
+                        <div class="apy">
+                            <strong>3.2%</strong>
+                            <span>Example APY</span>
+                        </div>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="asset-bottom">
+                        <div class="asset-description">
+                            Staking can involve lockups and validator risks
+                        </div>
+                        <button class="earn-btn" type="button" data-coin="ETH">
+                            Explore
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Solana -->
+                <article class="earn-card">
+                    <div class="asset-top">
+                        <div class="coin-icon sol">≋</div>
+
+                        <div class="asset-name">
+                            <h3>Solana</h3>
+                            <p>SOL · Staking</p>
+                        </div>
+
+                        <div class="apy">
+                            <strong>5.0%</strong>
+                            <span>Example APY</span>
+                        </div>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="asset-bottom">
+                        <div class="asset-description">
+                            Rewards may vary with network conditions
+                        </div>
+                        <button class="earn-btn" type="button" data-coin="SOL">
+                            Explore
+                        </button>
+                    </div>
+                </article>
+
+                <!-- BNB -->
+                <article class="earn-card">
+                    <div class="asset-top">
+                        <div class="coin-icon bnb">◆</div>
+
+                        <div class="asset-name">
+                            <h3>BNB</h3>
+                            <p>BNB · Network products</p>
+                        </div>
+
+                        <div class="apy">
+                            <strong>2.8%</strong>
+                            <span>Example APY</span>
+                        </div>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="asset-bottom">
+                        <div class="asset-description">
+                            Availability depends on the selected provider
+                        </div>
+                        <button class="earn-btn" type="button" data-coin="BNB">
+                            Explore
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="section-heading">
+                <h2>How it works</h2>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3>Choose an asset</h3>
+                        <p>Select a supported cryptocurrency and check its earning terms.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3>Review the conditions</h3>
+                        <p>Check the actual rate, fees, lockup period, and withdrawal rules.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3>Connect a supported provider</h3>
+                        <p>A real product must verify your balance and confirm any deposit or staking transaction.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-note">
+                <h3>Understand the risks</h3>
+                <p>
+                    Crypto prices can fall, rates can change, and some earning products
+                    involve lockups, smart-contract vulnerabilities, validator penalties,
+                    or counterparty risk. Returns are not guaranteed.
+                </p>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Earn product preview modal -->
+    <div class="modal-overlay" id="earnModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        aria-hidden="true">
+        <div class="modal">
+
+            <div class="modal-icon" id="modalIcon">₮</div>
+
+            <h2 id="modalTitle">Explore earning</h2>
+
+            <p class="modal-description" id="modalDescription">
+                Review this example earning product.
+            </p>
+
+            <label class="field-label" for="earnAmount">
+                Amount to explore
+            </label>
+
+            <input class="amount-input" id="earnAmount" type="number" min="0" step="any" placeholder="Enter amount"
+                inputmode="decimal" />
+
+            <label class="field-label" for="duration">
+                Example period
+            </label>
+
+            <select class="duration-select" id="duration">
+                <option value="30">30 days</option>
+                <option value="90">90 days</option>
+                <option value="180">180 days</option>
+                <option value="365">365 days</option>
+            </select>
+
+            <div class="modal-info">
+                <div>
+                    <span>Asset</span>
+                    <strong id="summaryCoin">USDT</strong>
+                </div>
+
+                <div>
+                    <span>Illustrative APY</span>
+                    <strong id="summaryRate">4.5%</strong>
+                </div>
+
+                <div>
+                    <span>Example reward</span>
+                    <strong id="summaryReward">0 USDT</strong>
+                </div>
+
+                <div>
+                    <span>Real transaction</span>
+                    <strong>Not available</strong>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                This calculation is an illustration based on the example APY shown.
+                It is not a live offer, reward quote, or promise of earnings.
+            </p>
+
+            <button class="modal-btn" id="previewBtn" type="button">
+                Preview demo
+            </button>
+
+            <button class="modal-btn secondary" id="closeModalBtn" type="button">
+                Close
+            </button>
+
+            <div class="demo-result" id="demoResult" role="status" aria-live="polite">
+                <strong>Preview complete.</strong><br />
+                No assets have been deposited or staked, and no rewards have been earned.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const earnModal = document.getElementById("earnModal");
+        const earnAmount = document.getElementById("earnAmount");
+        const duration = document.getElementById("duration");
+
+        const modalIcon = document.getElementById("modalIcon");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDescription = document.getElementById("modalDescription");
+
+        const summaryCoin = document.getElementById("summaryCoin");
+        const summaryRate = document.getElementById("summaryRate");
+        const summaryReward = document.getElementById("summaryReward");
+
+        const previewBtn = document.getElementById("previewBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const demoResult = document.getElementById("demoResult");
+
+        // These rates are examples for interface testing, not real market offers.
+        const products = {
+            USDT: {
+                name: "Tether USD",
+                symbol: "₮",
+                apy: 4.5,
+                iconClass: "usdt",
+                description: "Example flexible earning product."
+            },
+            ETH: {
+                name: "Ethereum",
+                symbol: "◆",
+                apy: 3.2,
+                iconClass: "eth",
+                description: "Example Ethereum staking product."
+            },
+            SOL: {
+                name: "Solana",
+                symbol: "≋",
+                apy: 5.0,
+                iconClass: "sol",
+                description: "Example Solana staking product."
+            },
+            BNB: {
+                name: "BNB",
+                symbol: "◆",
+                apy: 2.8,
+                iconClass: "bnb",
+                description: "Example BNB earning product."
+            }
+        };
+
+        let selectedCoin = "USDT";
+
+        function formatAmount(value) {
+            return Number(value).toLocaleString("en-US", {
+                maximumFractionDigits: 8
+            });
+        }
+
+        function updateRewardPreview() {
+            const product = products[selectedCoin];
+            const amount = Number(earnAmount.value);
+            const days = Number(duration.value);
+
+            if (
+                !Number.isFinite(amount) ||
+                amount <= 0 ||
+                amount > 1000000000
+            ) {
+                summaryReward.textContent = "—";
+                return;
+            }
+
+            // Simple illustrative estimate using annual percentage yield.
+            // This does not model fees, compounding schedules, or real provider terms.
+            const estimatedReward =
+                amount * (Math.pow(1 + product.apy / 100, days / 365) - 1);
+
+            summaryReward.textContent =
+                formatAmount(estimatedReward) + " " + selectedCoin;
+        }
+
+        function openEarnModal(coin) {
+            selectedCoin = coin;
+
+            const product = products[coin];
+
+            modalIcon.textContent = product.symbol;
+            modalIcon.className = "modal-icon " + product.iconClass;
+
+            modalTitle.textContent = "Explore " + product.name;
+            modalDescription.textContent = product.description;
+
+            summaryCoin.textContent = coin;
+            summaryRate.textContent = product.apy.toFixed(1) + "% (example)";
+
+            earnAmount.value = "";
+            duration.value = "30";
+
+            demoResult.classList.remove("show");
+            previewBtn.style.display = "block";
+
+            updateRewardPreview();
+
+            earnModal.classList.add("show");
+            earnModal.setAttribute("aria-hidden", "false");
+
+            earnAmount.focus();
+        }
+
+        function closeEarnModal() {
+            earnModal.classList.remove("show");
+            earnModal.setAttribute("aria-hidden", "true");
+
+            demoResult.classList.remove("show");
+            previewBtn.style.display = "block";
+        }
+
+        document.querySelectorAll("[data-coin]").forEach((button) => {
+            button.addEventListener("click", () => {
+                openEarnModal(button.dataset.coin);
+            });
+        });
+
+        earnAmount.addEventListener("input", updateRewardPreview);
+        duration.addEventListener("change", updateRewardPreview);
+
+        previewBtn.addEventListener("click", () => {
+            const amount = Number(earnAmount.value);
+
+            if (
+                !Number.isFinite(amount) ||
+                amount <= 0 ||
+                amount > 1000000000
+            ) {
+                earnAmount.focus();
+                earnAmount.setCustomValidity(
+                    "Enter an amount greater than zero and no more than 1 billion."
+                );
+                earnAmount.reportValidity();
+                earnAmount.setCustomValidity("");
+                return;
+            }
+
+            updateRewardPreview();
+
+            demoResult.classList.add("show");
+            previewBtn.style.display = "none";
+        });
+
+        closeModalBtn.addEventListener("click", closeEarnModal);
+
+        earnModal.addEventListener("click", (event) => {
+            if (event.target === earnModal) {
+                closeEarnModal();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Escape" &&
+                earnModal.classList.contains("show")
+            ) {
+                closeEarnModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f7fc" />
+    <title>Sell USDT | Crypto Wallet Demo</title>
+
+    <style>
+        :root {
+            --primary: #7c5cf4;
+            --primary-dark: #6544df;
+            --background: #f8f7fc;
+            --surface: #ffffff;
+            --text: #191824;
+            --muted: #898797;
+            --border: #e9e7f0;
+            --warning-bg: #fff8e7;
+            --warning-text: #7b6123;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button {
+            font: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+        }
+
+        /* Header */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            padding: 18px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .done-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .header-title small {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .currency {
+            justify-self: end;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Main content */
+        .content {
+            flex: 1;
+            padding: 24px 20px 16px;
+        }
+
+        .amount-section {
+            padding: 34px 0 22px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .amount-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .amount-input {
+            width: 80%;
+            min-width: 0;
+            padding: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: clamp(36px, 10vw, 48px);
+            font-weight: 600;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .amount-input::placeholder {
+            color: #c7c5d0;
+        }
+
+        .asset-symbol {
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .amount-caption {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .amount-caption strong {
+            color: var(--primary);
+        }
+
+        /* Network information */
+        .network-card {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .network-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: #fff0f0;
+            color: #d74751;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .network-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .network-details h3 {
+            margin: 0 0 5px;
+            font-size: 14px;
+        }
+
+        .network-details p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .network-badge {
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: #f1edff;
+            color: #6248d2;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Estimated payout */
+        .payout-card {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 15px;
+            background: #f0edff;
+        }
+
+        .payout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payout-row+.payout-row {
+            margin-top: 12px;
+        }
+
+        .payout-label {
+            color: #6d6685;
+            font-size: 13px;
+        }
+
+        .payout-value {
+            color: #4f39b5;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .payout-note {
+            margin: 13px 0 0;
+            color: #746b94;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .demo-notice {
+            margin-top: 16px;
+            padding: 13px 14px;
+            border: 1px solid #f0dfa9;
+            border-radius: 12px;
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Sell button */
+        .sell-btn {
+            width: 100%;
+            margin: 24px 0 12px;
+            padding: 16px;
+            border: none;
+            border-radius: 30px;
+            background: #d8d0fb;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .sell-btn.active {
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .sell-btn.active:hover {
+            background: var(--primary-dark);
+        }
+
+        .sell-btn.active:active {
+            transform: scale(0.99);
+        }
+
+        /* Keypad */
+        .keypad-container {
+            padding: 14px 18px 24px;
+            background: #eeedf3;
+            border-top: 1px solid #e4e2ec;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .key {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 57px;
+            border: 1px solid #e9e7ef;
+            border-radius: 12px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .key:active {
+            background: #e8e1ff;
+            transform: scale(0.97);
+        }
+
+        .key-number {
+            font-size: 22px;
+            line-height: 1.1;
+        }
+
+        .key-letters {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .key.delete {
+            color: var(--primary);
+            font-size: 25px;
+        }
+
+        /* Review modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(22, 19, 36, 0.56);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 390px;
+            padding: 25px 22px;
+            border-radius: 22px;
+            background: white;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+            animation: appear 0.2s ease-out;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-icon {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: #fff0f0;
+            color: #d74751;
+            font-size: 25px;
+        }
+
+        .modal h2 {
+            margin: 0 0 8px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .modal-description {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .summary-list {
+            padding: 15px;
+            border-radius: 14px;
+            background: #f8f7fc;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-row span {
+            color: var(--muted);
+        }
+
+        .summary-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-warning {
+            margin: 16px 0;
+            color: var(--warning-text);
+            font-size: 12px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-btn.secondary {
+            margin-top: 9px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+        }
+
+        .modal-btn.secondary:hover {
+            background: #f7f6fa;
+        }
+
+        .demo-result {
+            display: none;
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            background: #eaf8f1;
+            color: #177b55;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .demo-result.show {
+            display: block;
+        }
+
+        @media (max-width: 360px) {
+            .top-bar {
+                padding: 16px 12px;
+            }
+
+            .content {
+                padding-right: 14px;
+                padding-left: 14px;
+            }
+
+            .keypad-container {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .key {
+                min-height: 51px;
+            }
+
+            .network-badge {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="top-bar">
+            <a href="./dashboard.html" class="done-link">Done</a>
+
+            <div class="header-title">
+                Sell USDT
+                <small>TRC20 | Tron</small>
+            </div>
+
+            <div class="currency">USD</div>
+        </header>
+
+        <section class="content">
+
+            <div class="amount-section">
+                <p class="eyebrow">How much USDT do you want to sell?</p>
+
+                <div class="amount-display">
+                    <input id="usdtAmount" class="amount-input" type="text" inputmode="none" placeholder="0.00" readonly
+                        aria-label="USDT amount to sell" />
+
+                    <span class="asset-symbol">USDT</span>
+                </div>
+
+                <p class="amount-caption">
+                    Network: <strong>TRON (TRC20)</strong>
+                </p>
+            </div>
+
+            <div class="network-card">
+                <div class="network-icon" aria-hidden="true">T</div>
+
+                <div class="network-details">
+                    <h3>Tether USD</h3>
+                    <p>USDT · TRON network</p>
+                </div>
+
+                <span class="network-badge">TRC20</span>
+            </div>
+
+            <div class="payout-card">
+                <div class="payout-row">
+                    <span class="payout-label">Amount to sell</span>
+                    <span class="payout-value" id="amountSummary">0 USDT</span>
+                </div>
+
+                <div class="payout-row">
+                    <span class="payout-label">Estimated payout</span>
+                    <span class="payout-value" id="payoutSummary">Unavailable</span>
+                </div>
+
+                <p class="payout-note">
+                    Payout rates and transaction fees have not been configured.
+                    A live quote must be obtained from your selling provider.
+                </p>
+            </div>
+
+            <div class="demo-notice">
+                <strong>Selling Mode:</strong> The transfer USDT,
+                collect deposits, or send fiat payouts. All transaction will
+                take place.
+            </div>
+
+            <button class="sell-btn" id="sellBtn" type="button" disabled>
+                Continue
+            </button>
+
+        </section>
+
+        <section class="keypad-container" aria-label="Numeric keypad">
+            <div class="keypad">
+
+                <button class="key" type="button" data-value="1">
+                    <span class="key-number">1</span>
+                </button>
+
+                <button class="key" type="button" data-value="2">
+                    <span class="key-number">2</span>
+                    <span class="key-letters">ABC</span>
+                </button>
+
+                <button class="key" type="button" data-value="3">
+                    <span class="key-number">3</span>
+                    <span class="key-letters">DEF</span>
+                </button>
+
+                <button class="key" type="button" data-value="4">
+                    <span class="key-number">4</span>
+                    <span class="key-letters">GHI</span>
+                </button>
+
+                <button class="key" type="button" data-value="5">
+                    <span class="key-number">5</span>
+                    <span class="key-letters">JKL</span>
+                </button>
+
+                <button class="key" type="button" data-value="6">
+                    <span class="key-number">6</span>
+                    <span class="key-letters">MNO</span>
+                </button>
+
+                <button class="key" type="button" data-value="7">
+                    <span class="key-number">7</span>
+                    <span class="key-letters">PQRS</span>
+                </button>
+
+                <button class="key" type="button" data-value="8">
+                    <span class="key-number">8</span>
+                    <span class="key-letters">TUV</span>
+                </button>
+
+                <button class="key" type="button" data-value="9">
+                    <span class="key-number">9</span>
+                    <span class="key-letters">WXYZ</span>
+                </button>
+
+                <button class="key" type="button" data-value=".">
+                    <span class="key-number">.</span>
+                </button>
+
+                <button class="key" type="button" data-value="0">
+                    <span class="key-number">0</span>
+                </button>
+
+                <button class="key delete" type="button" id="deleteKey" aria-label="Delete last digit">
+                    ⌫
+                </button>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Review modal -->
+    <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        aria-hidden="true">
+        <div class="modal">
+
+            <div class="modal-icon" aria-hidden="true">T</div>
+
+            <h2 id="modalTitle">Review your sale</h2>
+
+            <p class="modal-description">
+                Review the amount of USDT you entered before continuing.
+            </p>
+
+            <div class="summary-list">
+                <div class="summary-row">
+                    <span>Asset</span>
+                    <strong>USDT</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Network</span>
+                    <strong>TRON (TRC20)</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Amount to sell</span>
+                    <strong id="reviewAmount">0 USDT</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estimated payout</span>
+                    <strong>Unavailable</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Transaction status</span>
+                    <strong>Not submitted</strong>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                Transfer cryptocurrency
+                or initiate a payout.
+            </p>
+
+            <button class="modal-btn" id="demoBtn" type="button">
+                Continue 
+            </button>
+
+            <button class="modal-btn secondary" id="closeModalBtn" type="button">
+                Go back
+            </button>
+
+            <div class="demo-result" id="demoResult" role="status" aria-live="polite">
+                <strong>Completed.</strong><br />
+                No USDT was transferred and no payout was made. A verified provider
+                and backend are required to implement a real sale.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById("usdtAmount");
+        const sellBtn = document.getElementById("sellBtn");
+
+        const amountSummary = document.getElementById("amountSummary");
+        const payoutSummary = document.getElementById("payoutSummary");
+
+        const reviewModal = document.getElementById("reviewModal");
+        const reviewAmount = document.getElementById("reviewAmount");
+        const demoBtn = document.getElementById("demoBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const demoResult = document.getElementById("demoResult");
+        const deleteKey = document.getElementById("deleteKey");
+
+        let amountValue = "";
+
+        const MAX_AMOUNT = 1000000000;
+        const MAX_DECIMALS = 6;
+
+        function formatAmount(value) {
+            if (!value) return "";
+
+            const parts = value.split(".");
+            const whole = Number(parts[0] || "0").toLocaleString("en-US");
+
+            if (parts.length > 1) {
+                return whole + "." + parts[1];
+            }
+
+            return whole;
+        }
+
+        function getAmount() {
+            return amountValue === "" ? 0 : Number(amountValue);
+        }
+
+        function updateInterface() {
+            input.value = formatAmount(amountValue);
+
+            const amount = getAmount();
+            const validAmount =
+                Number.isFinite(amount) &&
+                amount > 0 &&
+                amount <= MAX_AMOUNT;
+
+            amountSummary.textContent =
+                formatAmount(amountValue) + " USDT";
+
+            payoutSummary.textContent = "Unavailable";
+
+            sellBtn.disabled = !validAmount;
+            sellBtn.classList.toggle("active", validAmount);
+        }
+
+        function appendValue(value) {
+            if (value === "." && amountValue.includes(".")) {
+                return;
+            }
+
+            if (amountValue.includes(".")) {
+                const decimalPart = amountValue.split(".")[1] || "";
+
+                if (
+                    value !== "." &&
+                    decimalPart.length >= MAX_DECIMALS
+                ) {
+                    return;
+                }
+            }
+
+            if (value === "." && amountValue === "") {
+                amountValue = "0.";
+                updateInterface();
+                return;
+            }
+
+            if (value !== "." && amountValue === "0") {
+                amountValue = value;
+                updateInterface();
+                return;
+            }
+
+            const digitCount = amountValue.replace(".", "").length;
+
+            if (value !== "." && digitCount >= 12) {
+                return;
+            }
+
+            const nextValue = amountValue + value;
+            const nextAmount = Number(nextValue);
+
+            if (
+                Number.isFinite(nextAmount) &&
+                nextAmount <= MAX_AMOUNT
+            ) {
+                amountValue = nextValue;
+            }
+
+            updateInterface();
+        }
+
+        function deleteLast() {
+            amountValue = amountValue.slice(0, -1);
+            updateInterface();
+        }
+
+        function openModal() {
+            if (sellBtn.disabled) return;
+
+            reviewAmount.textContent =
+                formatAmount(amountValue) + " USDT";
+
+            demoResult.classList.remove("show");
+            demoBtn.style.display = "block";
+
+            reviewModal.classList.add("show");
+            reviewModal.setAttribute("aria-hidden", "false");
+
+            closeModalBtn.focus();
+        }
+
+        function closeModal() {
+            reviewModal.classList.remove("show");
+            reviewModal.setAttribute("aria-hidden", "true");
+
+            demoResult.classList.remove("show");
+            demoBtn.style.display = "block";
+
+            sellBtn.focus();
+        }
+
+        function completeDemo() {
+            demoResult.classList.add("show");
+            demoBtn.style.display = "none";
+        }
+
+        document.querySelectorAll("[data-value]").forEach((key) => {
+            key.addEventListener("click", () => {
+                appendValue(key.dataset.value);
+            });
+        });
+
+        deleteKey.addEventListener("click", deleteLast);
+        sellBtn.addEventListener("click", openModal);
+        closeModalBtn.addEventListener("click", closeModal);
+        demoBtn.addEventListener("click", completeDemo);
+
+        reviewModal.addEventListener("click", (event) => {
+            if (event.target === reviewModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (
+                event.key === "Escape" &&
+                reviewModal.classList.contains("show")
+            ) {
+                closeModal();
+            }
+        });
+
+        updateInterface();
+    </script>
+</body>
+
+</html>

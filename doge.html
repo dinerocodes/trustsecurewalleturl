@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dogecoin (DOGE) | Crypto Wallet</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding-bottom: 85px;
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #111;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 18px 16px;
+            gap: 13px;
+        }
+
+        .back {
+            font-size: 23px;
+        }
+
+        .back a {
+            color: #111;
+            text-decoration: none;
+        }
+
+        .title {
+            flex: 1;
+            font-weight: 700;
+            font-size: 17px;
+        }
+
+        .title small {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            font-weight: 400;
+            margin-top: 3px;
+        }
+
+        .header-action {
+            color: #888;
+            font-size: 19px;
+        }
+
+        .notice {
+            background: #f9f1d9;
+            color: #594b15;
+            font-size: 13px;
+            padding: 13px;
+            margin: 5px 13px 15px;
+            border-radius: 9px;
+            line-height: 1.5;
+        }
+
+        .notice i {
+            margin-right: 6px;
+        }
+
+        .price-section {
+            text-align: center;
+            padding: 15px 10px 10px;
+        }
+
+        .coin-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 9px;
+        }
+
+        .live-status {
+            font-size: 12px;
+            color: #16a05d;
+            margin-bottom: 8px;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #16a05d;
+            margin-right: 5px;
+        }
+
+        .price {
+            font-size: 31px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .change {
+            font-size: 14px;
+            margin-top: 7px;
+            font-weight: 500;
+        }
+
+        .positive {
+            color: #159957;
+        }
+
+        .negative {
+            color: #e04444;
+        }
+
+        .chart-container {
+            margin: 15px 14px;
+            padding: 15px 10px 10px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 14px;
+        }
+
+        .chart-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            padding: 0 5px 12px;
+        }
+
+        .chart-area {
+            width: 100%;
+            height: 190px;
+            position: relative;
+        }
+
+        #priceChart {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .chart-loading {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #999;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .chart-filters {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 12px;
+            border-top: 1px solid #f1f1f1;
+            gap: 5px;
+        }
+
+        .chart-filters button {
+            border: none;
+            background: transparent;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .chart-filters button.active {
+            background: #eaf0ff;
+            color: #1454e8;
+            font-weight: 700;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-top: 22px;
+        }
+
+        .tabs div {
+            flex: 1;
+            text-align: center;
+            padding: 13px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1454e8;
+            border-bottom: 2px solid #1454e8;
+        }
+
+        .balance-section {
+            padding: 16px;
+        }
+
+        .section-heading {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        .balance-card {
+            background: #f6f7f9;
+            border-radius: 13px;
+            padding: 16px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .balance-info img {
+            width: 42px;
+            height: 42px;
+        }
+
+        .name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .quantity {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .balance-value {
+            text-align: right;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .balance-change {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .market-section {
+            padding: 5px 16px 20px;
+        }
+
+        .market-heading {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .market-card {
+            border: 1px solid #eee;
+            border-radius: 11px;
+            padding: 14px 12px;
+        }
+
+        .market-card small {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .market-card strong {
+            display: block;
+            margin-top: 7px;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .update-time {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            padding: 0 10px 15px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            padding: 11px 0 12px;
+            z-index: 100;
+        }
+
+        .bottom-nav a {
+            text-decoration: none;
+            color: #555;
+            flex: 1;
+            text-align: center;
+        }
+
+        .bottom-nav .icon {
+            font-size: 19px;
+            margin-bottom: 5px;
+        }
+
+        .bottom-nav .label {
+            font-size: 11px;
+        }
+
+        .bottom-nav a:active {
+            color: #1454e8;
+        }
+
+        @media(max-width: 380px) {
+            .price {
+                font-size: 27px;
+            }
+
+            .chart-filters button {
+                padding: 7px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <div class="back">
+            <a href="/dashboard.html">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+
+        <div class="title">
+            Dogecoin
+            <small>DOGE | Dogecoin Network</small>
+        </div>
+
+        <div class="header-action">
+            <i class="fa-solid fa-ellipsis"></i>
+        </div>
+
+    </div>
+
+
+    <!-- NOTICE -->
+    <div class="notice">
+        <i class="fa-solid fa-circle-info"></i>
+        Dogecoin market information is updated automatically.
+        Your portfolio balance reflects your configured wallet holdings.
+    </div>
+
+
+    <!-- PRICE -->
+    <div class="price-section">
+
+        <img class="coin-icon" src="https://assets.coingecko.com/coins/images/5/large/dogecoin.png" alt="Dogecoin">
+
+        <div class="live-status">
+            <span class="live-dot"></span>
+            Live market price
+        </div>
+
+        <div class="price" id="dogePrice">
+            Loading...
+        </div>
+
+        <div class="change" id="dogeChange">
+            Loading market data...
+        </div>
+
+    </div>
+
+
+    <!-- CHART -->
+    <div class="chart-container">
+
+        <div class="chart-top">
+            <span>Dogecoin price chart</span>
+            <span>DOGE / USD</span>
+        </div>
+
+        <div class="chart-area">
+
+            <canvas id="priceChart"></canvas>
+
+            <div class="chart-loading" id="chartLoading">
+                Loading chart...
+            </div>
+
+        </div>
+
+        <div class="chart-filters">
+
+            <button data-days="1" class="active">24H</button>
+            <button data-days="7">1W</button>
+            <button data-days="30">1M</button>
+            <button data-days="90">3M</button>
+            <button data-days="365">1Y</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- HOLDINGS TAB -->
+    <div class="tabs">
+        <div>My Holdings</div>
+    </div>
+
+
+    <!-- BALANCE -->
+    <div class="balance-section">
+
+        <div class="section-heading">
+            Your Dogecoin Balance
+        </div>
+
+        <div class="balance-card">
+
+            <div class="balance-info">
+
+                <img src="https://assets.coingecko.com/coins/images/5/large/dogecoin.png" alt="DOGE">
+
+                <div>
+                    <div class="name">Dogecoin</div>
+
+                    <div class="quantity" id="dogeQuantity">
+                        0.00 DOGE
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="balance-value">
+
+                <div id="dogeBalance">
+                    Loading...
+                </div>
+
+                <div class="balance-change" id="dogeProfit">
+                    Market value
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKET INFORMATION -->
+    <div class="market-section">
+
+        <div class="market-heading">
+            Market Information
+        </div>
+
+        <div class="market-grid">
+
+            <div class="market-card">
+                <small>Market Capitalization</small>
+                <strong id="marketCap">Loading...</strong>
+            </div>
+
+            <div class="market-card">
+                <small>24H Trading Volume</small>
+                <strong id="volume">Loading...</strong>
+            </div>
+
+            <div class="market-card">
+                <small>24H High</small>
+                <strong id="highPrice">Loading...</strong>
+            </div>
+
+            <div class="market-card">
+                <small>24H Low</small>
+                <strong id="lowPrice">Loading...</strong>
+            </div>
+
+            <div class="market-card">
+                <small>Market Rank</small>
+                <strong id="marketRank">Loading...</strong>
+            </div>
+
+            <div class="market-card">
+                <small>Circulating Supply</small>
+                <strong id="supply">Loading...</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="update-time" id="updateTime">
+        Waiting for market data...
+    </div>
+
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+
+        <a href="/form.html">
+            <div class="icon">
+                <i class="fa-solid fa-arrow-up"></i>
+            </div>
+            <div class="label">Send</div>
+        </a>
+
+        <a href="/recieve.html">
+            <div class="icon">
+                <i class="fa-solid fa-copy"></i>
+            </div>
+            <div class="label">Receive</div>
+        </a>
+
+        <a href="/buy.html">
+            <div class="icon">
+                <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <div class="label">Buy</div>
+        </a>
+
+        <a href="/sell.html">
+            <div class="icon">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div class="label">Sell</div>
+        </a>
+
+    </div>
+
+
+    <script>
+
+        // ====================================
+        // WALLET SETTINGS
+        // ====================================
+
+        const HOLDINGS = 0;
+
+        const API = "https://api.coingecko.com/api/v3";
+
+        const COIN_ID = "dogecoin";
+
+        let currentDays = 1;
+        let chartPoints = [];
+        let lastPrice = null;
+
+        const money = value =>
+            new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+
+        const compactMoney = value =>
+            new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                notation: "compact",
+                maximumFractionDigits: 2
+            }).format(value);
+
+
+        // ====================================
+        // FETCH LIVE MARKET INFORMATION
+        // ====================================
+
+        async function loadDogecoinData() {
+
+            try {
+
+                const response = await fetch(
+                    `${API}/coins/markets?vs_currency=usd&ids=${COIN_ID}&price_change_percentage=24h`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Market API unavailable");
+                }
+
+                const data = await response.json();
+
+                if (!data.length) {
+                    throw new Error("No Dogecoin data received");
+                }
+
+                const doge = data[0];
+
+                const price = doge.current_price;
+                const change = doge.price_change_percentage_24h || 0;
+                const changeAmount = price * change / (100 + change);
+
+                // Main price
+                document.getElementById("dogePrice").textContent =
+                    money(price);
+
+                // Price movement
+                const changeElement =
+                    document.getElementById("dogeChange");
+
+                changeElement.className =
+                    "change " + (change >= 0 ? "positive" : "negative");
+
+                changeElement.textContent =
+                    `${change >= 0 ? "▲" : "▼"} ${money(Math.abs(changeAmount))} (${change.toFixed(2)}%) today`;
+
+                // Holdings calculation
+                const balance = HOLDINGS * price;
+
+                document.getElementById("dogeQuantity").textContent =
+                    HOLDINGS.toFixed(8) + " DOGE";
+
+                document.getElementById("dogeBalance").textContent =
+                    money(balance);
+
+                // Approximate 24-hour change in portfolio value
+                const profit = balance * change / (100 + change);
+
+                const profitElement =
+                    document.getElementById("dogeProfit");
+
+                profitElement.textContent =
+                    `${profit >= 0 ? "+" : "-"}${money(Math.abs(profit))} (24H)`;
+
+                profitElement.className =
+                    "balance-change " +
+                    (profit >= 0 ? "positive" : "negative");
+
+                // Market information
+                document.getElementById("marketCap").textContent =
+                    compactMoney(doge.market_cap);
+
+                document.getElementById("volume").textContent =
+                    compactMoney(doge.total_volume);
+
+                document.getElementById("highPrice").textContent =
+                    money(doge.high_24h);
+
+                document.getElementById("lowPrice").textContent =
+                    money(doge.low_24h);
+
+                document.getElementById("marketRank").textContent =
+                    "#" + doge.market_cap_rank;
+
+                document.getElementById("supply").textContent =
+                    new Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2
+                    }).format(doge.circulating_supply) + " DOGE";
+
+                document.getElementById("updateTime").textContent =
+                    "Last updated: " + new Date().toLocaleTimeString();
+
+                lastPrice = price;
+
+            } catch (error) {
+
+                console.error("Dogecoin market error:", error);
+
+                if (lastPrice === null) {
+
+                    document.getElementById("dogePrice").textContent =
+                        "Price unavailable";
+
+                    document.getElementById("dogeChange").textContent =
+                        "Unable to load live market data";
+
+                }
+
+                document.getElementById("updateTime").textContent =
+                    "Market data temporarily unavailable. Retrying soon.";
+
+            }
+
+        }
+
+
+        // ====================================
+        // INTERACTIVE PRICE CHART
+        // ====================================
+
+        const canvas = document.getElementById("priceChart");
+        const ctx = canvas.getContext("2d");
+
+        function drawChart(prices) {
+
+            if (!prices || prices.length < 2) return;
+
+            chartPoints = prices;
+
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+
+            const ratio = window.devicePixelRatio || 1;
+
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+
+            ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+            ctx.clearRect(0, 0, width, height);
+
+            const values = prices.map(item => item[1]);
+
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const difference = max - min || 1;
+
+            const padding = {
+                top: 12,
+                bottom: 12,
+                left: 5,
+                right: 5
+            };
+
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+
+            const points = values.map((value, index) => {
+
+                return {
+                    x: padding.left +
+                        (index / (values.length - 1)) * chartWidth,
+
+                    y: padding.top +
+                        ((max - value) / difference) * chartHeight
+                };
+
+            });
+
+            const isUp = values[values.length - 1] >= values[0];
+
+            const lineColor = isUp ? "#16a05d" : "#e04444";
+
+            // Horizontal guide lines
+            ctx.strokeStyle = "#eeeeee";
+            ctx.lineWidth = 1;
+
+            for (let i = 1; i <= 3; i++) {
+
+                const y = padding.top + (chartHeight / 4) * i;
+
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+
+            }
+
+            // Gradient area
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+
+            gradient.addColorStop(
+                0,
+                isUp ? "rgba(22,160,93,0.20)" : "rgba(224,68,68,0.20)"
+            );
+
+            gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            points.forEach(point => {
+                ctx.lineTo(point.x, point.y);
+            });
+
+            ctx.lineTo(points[points.length - 1].x, height);
+            ctx.lineTo(points[0].x, height);
+            ctx.closePath();
+
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Price line
+            ctx.beginPath();
+
+            points.forEach((point, index) => {
+
+                if (index === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+
+            });
+
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 2.5;
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+        }
+
+
+        // ====================================
+        // LOAD CHART DATA
+        // ====================================
+
+        async function loadChart(days = currentDays) {
+
+            currentDays = days;
+
+            const loading = document.getElementById("chartLoading");
+
+            loading.style.display = "grid";
+            loading.textContent = "Loading chart...";
+
+            try {
+
+                const response = await fetch(
+                    `${API}/coins/${COIN_ID}/market_chart?vs_currency=usd&days=${days}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Chart unavailable");
+                }
+
+                const data = await response.json();
+
+                drawChart(data.prices);
+
+                loading.style.display = "none";
+
+            } catch (error) {
+
+                console.error("Chart error:", error);
+
+                loading.style.display = "grid";
+                loading.textContent = "Chart temporarily unavailable";
+
+            }
+
+        }
+
+
+        // ====================================
+        // CHART TIME FILTERS
+        // ====================================
+
+        document.querySelectorAll(".chart-filters button")
+            .forEach(button => {
+
+                button.addEventListener("click", () => {
+
+                    document.querySelectorAll(".chart-filters button")
+                        .forEach(btn => btn.classList.remove("active"));
+
+                    button.classList.add("active");
+
+                    const days = Number(button.dataset.days);
+
+                    loadChart(days);
+
+                });
+
+            });
+
+
+        // ====================================
+        // AUTO REFRESH
+        // ====================================
+
+        loadDogecoinData();
+
+        loadChart(1);
+
+        // Refresh market data every 60 seconds
+        setInterval(loadDogecoinData, 60000);
+
+        // Redraw chart when screen changes
+        window.addEventListener("resize", () => {
+
+            if (chartPoints.length) {
+                drawChart(chartPoints);
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

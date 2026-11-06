@@ -1,0 +1,242 @@
+/* =====================================
+   GOOGLE TRANSLATE - MAIN CONTAINER
+===================================== */
+
+.language-container {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 100%;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 9999;
+  box-sizing: border-box;
+}
+
+#google_translate_element {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* =====================================
+   GOOGLE DEFAULT BRANDING
+===================================== */
+
+.goog-te-gadget {
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.goog-te-gadget span,
+.goog-logo-link,
+.goog-te-gadget img {
+  display: none !important;
+}
+
+/* =====================================
+   LANGUAGE DROPDOWN BUTTON
+===================================== */
+
+.goog-te-gadget select {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  width: 145px;
+  max-width: 100%;
+  min-width: 100px;
+  height: 38px;
+
+  padding: 5px 28px 5px 10px;
+
+  border: 1px solid #ddd;
+  border-radius: 9px;
+
+  background-color: #fff;
+  color: #222;
+
+  font-family: inherit;
+  font-size: 10px !important;
+  font-weight: 600;
+
+  cursor: pointer;
+  outline: none;
+
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+}
+
+/* Hover effect */
+
+.goog-te-gadget select:hover {
+  border-color: #6366f1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Focus effect */
+
+.goog-te-gadget select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* Dropdown options */
+
+.goog-te-gadget select option {
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+}
+
+/* =====================================
+   TABLET RESPONSIVENESS
+===================================== */
+
+@media screen and (max-width: 768px) {
+  .language-container {
+    margin: 4px 0;
+  }
+
+  .goog-te-gadget select {
+    width: 130px;
+    height: 36px;
+    font-size: 11px !important;
+    padding: 5px 8px;
+  }
+}
+
+/* =====================================
+   MOBILE RESPONSIVENESS
+===================================== */
+
+@media screen and (max-width: 480px) {
+  .language-container {
+    width: auto;
+    max-width: 100%;
+    margin: 3px;
+  }
+
+  #google_translate_element {
+    width: auto;
+    max-width: 100%;
+  }
+
+  .goog-te-gadget select {
+    width: 120px;
+    min-width: 100px;
+    height: 34px;
+    padding: 4px 7px;
+
+    font-size: 10px !important;
+    border-radius: 8px;
+  }
+}
+
+/* =====================================
+   SMALL MOBILE DEVICES
+===================================== */
+
+@media screen and (max-width: 360px) {
+  .goog-te-gadget select {
+    width: 105px;
+    min-width: 95px;
+    height: 32px;
+    font-size: 9px !important;
+    padding: 3px 5px;
+  }
+}
+
+/* =====================================
+   GOOGLE TRANSLATE TOP BANNER
+===================================== */
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* =====================================
+   REMOVE GOOGLE TRANSLATE TOP POPUP
+===================================== */
+
+/* Hide Google translation banner */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  border: none !important;
+}
+
+/* Remove Google's injected top spacing */
+html,
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Hide Google translation tooltip */
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Remove translated text highlighting */
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide Google notification iframe */
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
+/* REMOVE GOOGLE TRANSLATE TOP TOOLBAR */
+
+/* Hide the translation toolbar */
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Remove the space created by Google */
+html {
+  margin-top: 0 !important;
+  top: 0 !important;
+}
+
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+  position: static !important;
+}
+
+/* Hide Google translation tooltip */
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-te-balloon-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Remove translated text highlighting */
+.goog-text-highlight {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}

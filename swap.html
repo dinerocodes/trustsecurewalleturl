@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f7fc" />
+    <link rel="stylesheet" href="./lan.css">
+    <title>Swap Crypto | Wallet </title>
+
+    <style>
+        :root {
+            --primary: #7c5cf4;
+            --primary-dark: #6544df;
+            --background: #f8f7fc;
+            --surface: #ffffff;
+            --text: #191824;
+            --muted: #898797;
+            --border: #e9e7f0;
+            --purple-light: #f0edff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app {
+            max-width: 520px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: var(--background);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            padding: 19px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .done-link {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .settings-btn {
+            justify-self: end;
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 19px;
+        }
+
+        /* Main content */
+        .content {
+            flex: 1;
+            padding: 24px 18px;
+        }
+
+        .intro {
+            margin: 6px 0 23px;
+        }
+
+        .intro h1 {
+            margin: 0 0 7px;
+            font-size: 25px;
+            letter-spacing: -0.6px;
+        }
+
+        .intro p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Swap cards */
+        .swap-card {
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--surface);
+        }
+
+        .card-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .balance {
+            font-size: 12px;
+        }
+
+        .balance strong {
+            color: var(--text);
+        }
+
+        .asset-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coin-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 43px;
+            height: 43px;
+            border-radius: 50%;
+            background: var(--purple-light);
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .coin-icon.btc {
+            background: #fff0df;
+            color: #e58a22;
+        }
+
+        .coin-icon.eth {
+            background: #e9edff;
+            color: #5969d8;
+        }
+
+        .coin-icon.usdt {
+            background: #e1f8ed;
+            color: #169b72;
+        }
+
+        .coin-icon.bnb {
+            background: #fff6d8;
+            color: #b18a00;
+        }
+
+        .coin-icon.sol {
+            background: #e9e2ff;
+            color: #7653d9;
+        }
+
+        .coin-icon.xrp {
+            background: #edf0f3;
+            color: #454c57;
+        }
+
+        .asset-select {
+            min-width: 0;
+            flex: 1;
+            padding: 8px 2px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .amount-field {
+            width: 44%;
+            min-width: 85px;
+            padding: 8px 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            text-align: right;
+            font-size: 23px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .amount-field::placeholder {
+            color: #c7c5d0;
+        }
+
+        .usd-value {
+            margin-top: 13px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .usd-value strong {
+            color: #6d6685;
+        }
+
+        /* Direction switch */
+        .direction-row {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            height: 0;
+        }
+
+        .reverse-btn {
+            display: grid;
+            place-items: center;
+            width: 45px;
+            height: 45px;
+            margin-top: -22px;
+            border: 4px solid var(--background);
+            border-radius: 15px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-size: 23px;
+            font-weight: 700;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .reverse-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .reverse-btn:active {
+            transform: rotate(180deg);
+        }
+
+        .receive-card {
+            margin-top: 12px;
+        }
+
+        .receive-amount {
+            min-width: 0;
+            flex: 1;
+            overflow-wrap: anywhere;
+            color: var(--text);
+            text-align: right;
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        /* Quote details */
+        .quote-card {
+            margin-top: 22px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .quote-title {
+            margin: 0 0 16px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .quote-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 13px;
+            font-size: 12px;
+        }
+
+        .quote-row span {
+            color: var(--muted);
+        }
+
+        .quote-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .quote-note {
+            margin: 15px 0 0;
+            padding-top: 13px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .demo-notice {
+            margin-top: 16px;
+            padding: 13px 14px;
+            border: 1px solid #f0dfa9;
+            border-radius: 12px;
+            background: #fff9e9;
+            color: #79601e;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .swap-btn {
+            width: 100%;
+            margin-top: 22px;
+            padding: 16px;
+            border: none;
+            border-radius: 30px;
+            background: var(--primary);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .swap-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .swap-btn:disabled {
+            background: #d8d0fb;
+            cursor: not-allowed;
+        }
+
+        .swap-btn:focus-visible,
+        .reverse-btn:focus-visible,
+        .settings-btn:focus-visible {
+            outline: 3px solid #b4a3ff;
+            outline-offset: 3px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(22, 19, 36, 0.56);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 390px;
+            padding: 24px 21px;
+            border-radius: 22px;
+            background: white;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal h2 {
+            margin: 0 0 8px;
+            text-align: center;
+            font-size: 21px;
+        }
+
+        .modal-description {
+            margin: 0 0 20px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .modal-summary {
+            padding: 15px;
+            border-radius: 14px;
+            background: var(--background);
+        }
+
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        .modal-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-row span {
+            color: var(--muted);
+        }
+
+        .modal-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-warning {
+            margin: 16px 0;
+            color: #79601e;
+            font-size: 12px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn.secondary {
+            margin-top: 9px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+        }
+
+        .demo-result {
+            display: none;
+            margin-top: 14px;
+            padding: 13px;
+            border-radius: 12px;
+            background: #eaf8f1;
+            color: #177b55;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .demo-result.show {
+            display: block;
+        }
+
+        @media (max-width: 370px) {
+            .content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .swap-card {
+                padding: 13px;
+            }
+
+            .asset-row {
+                gap: 6px;
+            }
+
+            .coin-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .asset-select {
+                font-size: 14px;
+            }
+
+            .amount-field,
+            .receive-amount {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="top-bar">
+            <a href="./dashboard.html" class="done-link">Done</a>
+            <div class="page-title">Swap Crypto</div>
+
+            <button type="button" class="settings-btn" id="settingsBtn" aria-label="Show swap information"
+                title="Swap information">ⓘ</button>
+        </header>
+
+        <section class="content">
+
+            <div class="intro">
+                <h1>Swap your crypto</h1>
+                <p>Choose the assets and amount you want to exchange.</p>
+            </div>
+
+            <!-- Asset to swap from -->
+            <section class="swap-card">
+                <div class="card-label">
+                    <span>You pay</span>
+                </div>
+
+                <div class="asset-row">
+                    <div class="coin-icon usdt" id="fromIcon">₮</div>
+
+                    <select id="fromCoin" class="asset-select" aria-label="Coin to swap from">
+                        <option value="USDT">USDT</option>
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="BNB">BNB</option>
+                        <option value="SOL">Solana</option>
+                        <option value="XRP">XRP</option>
+                    </select>
+
+                    <input id="fromAmount" class="amount-field" type="text" inputmode="decimal" autocomplete="off"
+                        placeholder="0.00" aria-label="Amount to swap" />
+                </div>
+
+                <div class="usd-value">
+                    USD value: <strong id="fromUsd">Unavailable</strong>
+                </div>
+            </section>
+
+            <div class="direction-row">
+                <button type="button" class="reverse-btn" id="reverseBtn" aria-label="Reverse swap direction"
+                    title="Reverse swap">⇅</button>
+            </div>
+
+            <!-- Asset to receive -->
+            <section class="swap-card receive-card">
+                <div class="card-label">
+                    <span>You receive</span>
+                    <span class="balance">Estimated amount</span>
+                </div>
+
+                <div class="asset-row">
+                    <div class="coin-icon btc" id="toIcon">₿</div>
+
+                    <select id="toCoin" class="asset-select" aria-label="Coin to receive">
+                        <option value="BTC">Bitcoin</option>
+                        <option value="USDT">USDT</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="BNB">BNB</option>
+                        <option value="SOL">Solana</option>
+                        <option value="XRP">XRP</option>
+                    </select>
+
+                    <div class="receive-amount" id="toAmount">—</div>
+                </div>
+
+                <div class="usd-value">
+                    USD value: <strong id="toUsd">Unavailable</strong>
+                </div>
+            </section>
+
+            <!-- Exchange details -->
+            <section class="quote-card">
+                <h2 class="quote-title">Swap details</h2>
+
+                <div class="quote-row">
+                    <span>Exchange rate</span>
+                    <strong id="exchangeRate">Unavailable</strong>
+                </div>
+
+                <div class="quote-row">
+                    <span>Network fee</span>
+                    <strong id="networkFee">Not calculated</strong>
+                </div>
+
+                <div class="quote-row">
+                    <span>Price impact</span>
+                    <strong>Unavailable</strong>
+                </div>
+
+                <p class="quote-note">
+                    Live prices, fees and swap quotes are not connected yet.
+                    The amounts shown as unavailable will need a real quote service.
+                </p>
+            </section>
+
+            <div class="-notice">
+                <strong> mode:</strong> This interface access your wallet,
+                broadcast blockchain transactions, or move cryptocurrency.
+            </div>
+
+            <button class="swap-btn" id="swapBtn" type="button" disabled>
+                Enter amount
+            </button>
+
+        </section>
+    </main>
+
+    <!-- Review swap modal -->
+    <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        aria-hidden="true">
+        <div class="modal">
+
+            <h2 id="modalTitle">Review your swap</h2>
+
+            <p class="modal-description">
+                Check the selected assets and entered amount.
+            </p>
+
+            <div class="modal-summary">
+                <div class="modal-row">
+                    <span>You pay</span>
+                    <strong id="reviewFrom">—</strong>
+                </div>
+
+                <div class="modal-row">
+                    <span>You receive</span>
+                    <strong id="reviewTo">—</strong>
+                </div>
+
+                <div class="modal-row">
+                    <span>Exchange rate</span>
+                    <strong>Unavailable</strong>
+                </div>
+
+                <div class="modal-row">
+                    <span>Transaction status</span>
+                    <strong>Not submitted</strong>
+                </div>
+            </div>
+
+            <p class="modal-warning">
+                Swap will be executed and assets
+                will be transferred.
+            </p>
+
+            <button type="button" class="modal-btn" id="demoBtn">
+                Continue 
+            </button>
+
+            <button type="button" class="modal-btn secondary" id="closeModalBtn">
+                Go back
+            </button>
+
+            <div class="demo-result" id="demoResult" role="status" aria-live="polite">
+                <strong>completed.</strong><br />
+                blockchain transaction was submitted.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const fromCoin = document.getElementById("fromCoin");
+        const toCoin = document.getElementById("toCoin");
+        const fromAmount = document.getElementById("fromAmount");
+
+        const fromIcon = document.getElementById("fromIcon");
+        const toIcon = document.getElementById("toIcon");
+
+        const fromUsd = document.getElementById("fromUsd");
+        const toUsd = document.getElementById("toUsd");
+        const toAmount = document.getElementById("toAmount");
+        const exchangeRate = document.getElementById("exchangeRate");
+        const networkFee = document.getElementById("networkFee");
+
+        const swapBtn = document.getElementById("swapBtn");
+        const reverseBtn = document.getElementById("reverseBtn");
+        const settingsBtn = document.getElementById("settingsBtn");
+
+        const reviewModal = document.getElementById("reviewModal");
+        const reviewFrom = document.getElementById("reviewFrom");
+        const reviewTo = document.getElementById("reviewTo");
+        const demoBtn = document.getElementById("demoBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const demoResult = document.getElementById("demoResult");
+
+        // Display names and icons are for the demo interface only.
+        const coins = {
+            USDT: { name: "USDT", symbol: "₮", style: "usdt" },
+            BTC: { name: "Bitcoin", symbol: "₿", style: "btc" },
+            ETH: { name: "Ethereum", symbol: "◆", style: "eth" },
+            BNB: { name: "BNB", symbol: "◆", style: "bnb" },
+            SOL: { name: "Solana", symbol: "≋", style: "sol" },
+            XRP: { name: "XRP", symbol: "X", style: "xrp" }
+        };
+
+        function formatNumber(value, maxDecimals = 8) {
+            return Number(value).toLocaleString("en-US", {
+                maximumFractionDigits: maxDecimals
+            });
+        }
+
+        function getNumericAmount() {
+            const value = fromAmount.value.trim();
+
+            // Do not treat incomplete inputs such as "2." as a valid final amount.
+            if (!/^\d+(\.\d+)?$/.test(value)) {
+                return 0;
+            }
+
+            const amount = Number(value);
+
+            return Number.isFinite(amount) && amount > 0 ? amount : 0;
+        }
+
+        function updateCoinIcon(element, coinCode) {
+            const coin = coins[coinCode];
+
+            element.textContent = coin.symbol;
+            element.className = "coin-icon " + coin.style;
+        }
+
+        function updateInterface() {
+            const from = fromCoin.value;
+            const to = toCoin.value;
+            const amount = getNumericAmount();
+
+            updateCoinIcon(fromIcon, from);
+            updateCoinIcon(toIcon, to);
+
+            if (from === to) {
+                toAmount.textContent = "Choose another coin";
+                swapBtn.disabled = true;
+                swapBtn.textContent = "Select different coins";
+            } else {
+                toAmount.textContent = amount > 0 ? "Quote unavailable" : "—";
+
+                const validAmount =
+                    amount > 0 &&
+                    Number.isFinite(amount) &&
+                    amount <= 1000000000;
+
+                swapBtn.disabled = !validAmount;
+                swapBtn.textContent = validAmount ? "Review swap" : "Enter amount";
+            }
+
+            // Never display fabricated market prices or wallet balances.
+            fromUsd.textContent = "Unavailable";
+            toUsd.textContent = "Unavailable";
+            exchangeRate.textContent = "Unavailable";
+            networkFee.textContent = "Not calculated";
+        }
+
+        function reverseSwap() {
+            const previousFrom = fromCoin.value;
+
+            fromCoin.value = toCoin.value;
+            toCoin.value = previousFrom;
+
+            updateInterface();
+        }
+
+        function openReviewModal() {
+            if (swapBtn.disabled) return;
+
+            const from = fromCoin.value;
+            const to = toCoin.value;
+            const amount = getNumericAmount();
+
+            reviewFrom.textContent = formatNumber(amount) + " " + from;
+            reviewTo.textContent = to + " (quote unavailable)";
+
+            demoResult.classList.remove("show");
+            demoBtn.style.display = "block";
+
+            reviewModal.classList.add("show");
+            reviewModal.setAttribute("aria-hidden", "false");
+
+            closeModalBtn.focus();
+        }
+
+        function closeReviewModal() {
+            reviewModal.classList.remove("show");
+            reviewModal.setAttribute("aria-hidden", "true");
+
+            demoResult.classList.remove("show");
+            demoBtn.style.display = "block";
+
+            swapBtn.focus();
+        }
+
+        function completeDemo() {
+            demoResult.classList.add("show");
+            demoBtn.style.display = "none";
+        }
+
+        fromCoin.addEventListener("change", () => {
+            // Keep the two assets different where possible.
+            if (fromCoin.value === toCoin.value) {
+                const alternative = Array.from(toCoin.options)
+                    .find(option => option.value !== fromCoin.value);
+
+                if (alternative) {
+                    toCoin.value = alternative.value;
+                }
+            }
+
+            updateInterface();
+        });
+
+        toCoin.addEventListener("change", () => {
+            if (fromCoin.value === toCoin.value) {
+                const alternative = Array.from(fromCoin.options)
+                    .find(option => option.value !== toCoin.value);
+
+                if (alternative) {
+                    fromCoin.value = alternative.value;
+                }
+            }
+
+            updateInterface();
+        });
+
+        fromAmount.addEventListener("input", () => {
+            // Permit digits and one decimal point only.
+            let value = fromAmount.value.replace(/[^0-9.]/g, "");
+            const decimalIndex = value.indexOf(".");
+
+            if (decimalIndex !== -1) {
+                value =
+                    value.slice(0, decimalIndex + 1) +
+                    value.slice(decimalIndex + 1).replace(/\./g, "");
+            }
+
+            const parts = value.split(".");
+
+            if (parts[1]) {
+                value = parts[0] + "." + parts[1].slice(0, 8);
+            }
+
+            if (Number(value) > 1000000000) {
+                value = "1000000000";
+            }
+
+            fromAmount.value = value;
+            updateInterface();
+        });
+
+        reverseBtn.addEventListener("click", reverseSwap);
+        swapBtn.addEventListener("click", openReviewModal);
+        closeModalBtn.addEventListener("click", closeReviewModal);
+        demoBtn.addEventListener("click", completeDemo);
+
+        settingsBtn.addEventListener("click", () => {
+            alert(
+                "Swap demo information:\n\n" +
+                "Live exchange rates, wallet balances, network fees, and blockchain " +
+                "transactions have not been connected."
+            );
+        });
+
+        reviewModal.addEventListener("click", event => {
+            if (event.target === reviewModal) {
+                closeReviewModal();
+            }
+        });
+
+        document.addEventListener("keydown", event => {
+            if (
+                event.key === "Escape" &&
+                reviewModal.classList.contains("show")
+            ) {
+                closeReviewModal();
+            }
+        });
+
+        updateInterface();
+    </script>
+
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,fr,de,es,pt',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+
+</html>

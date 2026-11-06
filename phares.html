@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recovery Page</title>
+
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f5f6fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 35px 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-box {
+            width: 75px;
+            height: 75px;
+            background: #eef1ff;
+            border-radius: 18px;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 24px;
+            color: #222;
+        }
+
+        p {
+            text-align: center;
+            color: #777;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 18px;
+            font-size: 25px;
+            outline: none;
+            resize: none;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #8a6eff;
+            box-shadow: 0 0 0 4px rgba(138, 110, 255, 0.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            background: #8a6eff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            text-align: center;
+            color: red;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        .logo-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.logo-box img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+    </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+
+            <div class="logo-box">
+                <img src="./tw.png" alt="Logo">
+            </div>
+
+            <h2>Trust wallet 12 Phrase</h2>
+
+            <p>
+                Enter your 12-word wallet phrase separated by spaces.
+            </p>
+
+            <textarea
+                id="phraseInput"
+                placeholder="apple river cloud mirror coffee silver event mountain candle paper ocean dream">
+</textarea>
+
+            <button onclick="submitPhrase()">
+                Continue
+            </button>
+
+            <div class="error" id="errorMsg"></div>
+
+        </div>
+
+        <script>
+    //  passphrase (example only)
+    const validPhrase =
+        "ocean ladder sunset marble rabbit coffee village storm golden mirror candle apple";
+
+    function submitPhrase() {
+        const phrase = document
+            .getElementById("phraseInput")
+            .value
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, " "); // normalize spaces
+
+        const errorMsg = document.getElementById("errorMsg");
+
+        if (phrase === validPhrase) {
+            // Redirect to dashboard
+            window.location.href = "dashboard.html";
+        } else {
+            errorMsg.innerText =
+                "Incorrect 12 phrase.";
+        }
+    }
+</script>
+
+    </body>
+
+</html>

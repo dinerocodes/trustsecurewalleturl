@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crypto Wallet | Withdrawal</title>
+
+    <style>
+        /* ========================================
+           GLOBAL STYLES
+        ======================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: #f4f5f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #252832;
+        }
+
+        /* ========================================
+           MAIN CONTAINER
+        ======================================== */
+
+        .login-container {
+            width: 100%;
+            max-width: 410px;
+            padding: 32px 28px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            display: block;
+            width: 76px;
+            height: auto;
+            max-width: 100%;
+            margin: 0 auto 20px;
+            object-fit: contain;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 26px;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #222432;
+        }
+
+        .intro {
+            margin-bottom: 26px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #707584;
+        }
+
+        /* ========================================
+           FORM ELEMENTS
+        ======================================== */
+
+        #withdrawForm {
+            width: 100%;
+        }
+
+        #withdrawForm>label:not(.checkbox-wrapper) {
+            display: block;
+            margin-bottom: 6px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #353847;
+        }
+
+        .input {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: 48px;
+            min-height: 48px;
+            margin-bottom: 16px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            border: 1px solid #d9dce5;
+            border-radius: 9px;
+            background-color: #ffffff;
+            color: #252832;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: normal;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input::placeholder {
+            color: #a0a4b0;
+        }
+
+        .input:focus {
+            border-color: #9275e8;
+            box-shadow: 0 0 0 3px rgba(146, 117, 232, 0.12);
+        }
+
+        /* ========================================
+           BANK DROPDOWN
+        ======================================== */
+
+        select#bankName,
+        select#card-type {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: 48px;
+            min-height: 48px;
+            margin: 0 0 18px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            border: 1px solid #d9dce5;
+            border-radius: 9px;
+            background-color: #ffffff;
+            color: #252832;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 16px;
+            line-height: normal;
+            cursor: pointer;
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+
+        select#bankName:focus,
+        select#card-type:focus {
+            outline: 2px solid #c5b4f7;
+            outline-offset: 1px;
+            border-color: #9d83ed;
+        }
+
+        select option {
+            color: #252832;
+            background: #ffffff;
+        }
+
+        /* ========================================
+           TERMS AND CONDITIONS
+        ======================================== */
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+            margin: 0 0 20px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #626776;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            flex: 0 0 16px;
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            accent-color: #7656d6;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper a {
+            color: #7656d6;
+            text-decoration: none;
+        }
+
+        .checkbox-wrapper a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========================================
+           SUBMIT BUTTON
+        ======================================== */
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            min-height: 48px;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 9px;
+            background: #7656d6;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #6343c0;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.99);
+        }
+
+        .submit-btn:focus-visible {
+            outline: 3px solid rgba(118, 86, 214, 0.35);
+            outline-offset: 3px;
+        }
+
+        /* ========================================
+           ERROR AND NOTICE MESSAGES
+        ======================================== */
+
+        .error-message {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border: 1px solid #f2c5c5;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .demo-notice {
+            margin-top: 20px;
+            text-align: center;
+            color: #858998;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+        ======================================== */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 14px;
+                align-items: flex-start;
+            }
+
+            .login-container {
+                max-width: 100%;
+                padding: 28px 22px;
+                margin: auto 0;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .intro {
+                font-size: 13px;
+                margin-bottom: 22px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 14px 10px;
+            }
+
+            .login-container {
+                padding: 24px 16px;
+                border-radius: 12px;
+            }
+
+            .logo {
+                width: 66px;
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .input,
+            select#bankName,
+            select#card-type {
+                height: 46px;
+                min-height: 46px;
+                padding: 0 10px;
+                font-size: 15px;
+            }
+
+            select#bankName,
+            select#card-type {
+                margin-bottom: 16px;
+            }
+
+            .checkbox-wrapper {
+                font-size: 12px;
+            }
+
+            .submit-btn {
+                min-height: 46px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            body {
+                padding: 10px 8px;
+            }
+
+            .login-container {
+                padding: 20px 12px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .input,
+            select#bankName,
+            select#card-type {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-height: 650px) and (min-width: 601px) {
+            body {
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
+            }
+        }
+
+        /* ========================================
+   WITHDRAWAL POPUP MODAL
+======================================== */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(20, 22, 35, 0.55);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 380px;
+            padding: 30px 24px;
+            background: #fff;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.18);
+            animation: popupFade 0.25s ease;
+        }
+
+        .modal-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fff3e0;
+            color: #d97706;
+            font-size: 30px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 12px;
+            color: #252832;
+            font-size: 21px;
+        }
+
+        .modal-box p {
+            margin-bottom: 22px;
+            color: #707584;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .modal-close {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            background: #7656d6;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            background: #6343c0;
+        }
+
+        @keyframes popupFade {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <img src="./tw.png" alt="Crypto Wallet Logo" class="logo">
+
+        <h1>Wallet Transfer</h1>
+
+        <p class="intro">
+            Transfer cryptocurrency from your wallet to another external wallet.
+            Enter the recipient's wallet details carefully.
+        </p>
+
+        <form id="withdrawForm" novalidate>
+
+            <label for="senderWallet">Your Wallet</label>
+            <select id="senderWallet" name="senderWallet" class="input" required>
+                <option value="" selected disabled>Select your wallet</option>
+                <option value="Trust Wallet">Trust Wallet</option>
+                <option value="MetaMask">MetaMask</option>
+                <option value="Exodus">Exodus</option>
+                <option value="Phantom">Phantom</option>
+                <option value="Coinbase Wallet">Coinbase Wallet</option>
+                <option value="Ledger">Ledger</option>
+                <option value="Trezor">Trezor</option>
+                <option value="SafePal">SafePal</option>
+                <option value="Atomic Wallet">Atomic Wallet</option>
+                <option value="Guarda Wallet">Guarda Wallet</option>
+                <option value="Electrum">Electrum</option>
+                <option value="MyEtherWallet">MyEtherWallet</option>
+                <option value="Rabby Wallet">Rabby Wallet</option>
+                <option value="Rainbow Wallet">Rainbow Wallet</option>
+                <option value="Zengo">Zengo</option>
+                <option value="Coinomi">Coinomi</option>
+                <option value="OKX Wallet">OKX Wallet</option>
+                <option value="Crypto.com Onchain">Crypto.com Onchain</option>
+                <option value="imToken">imToken</option>
+                <option value="TokenPocket">TokenPocket</option>
+            </select>
+
+            <label for="recipientWallet">Recipient Wallet</label>
+            <select id="recipientWallet" name="recipientWallet" class="input" required>
+                <option value="" selected disabled>Select recipient wallet</option>
+                <option value="Trust Wallet">Trust Wallet</option>
+                <option value="MetaMask">MetaMask</option>
+                <option value="Exodus">Exodus</option>
+                <option value="Phantom">Phantom</option>
+                <option value="Coinbase Wallet">Coinbase Wallet</option>
+                <option value="Ledger">Ledger</option>
+                <option value="Trezor">Trezor</option>
+                <option value="SafePal">SafePal</option>
+                <option value="Atomic Wallet">Atomic Wallet</option>
+                <option value="Guarda Wallet">Guarda Wallet</option>
+                <option value="Electrum">Electrum</option>
+                <option value="MyEtherWallet">MyEtherWallet</option>
+                <option value="Rabby Wallet">Rabby Wallet</option>
+                <option value="Rainbow Wallet">Rainbow Wallet</option>
+                <option value="Zengo">Zengo</option>
+                <option value="Coinomi">Coinomi</option>
+                <option value="OKX Wallet">OKX Wallet</option>
+                <option value="Crypto.com Onchain">Crypto.com Onchain</option>
+                <option value="imToken">imToken</option>
+                <option value="TokenPocket">TokenPocket</option>
+            </select>
+
+            <label for="walletAddress">Recipient Wallet Address</label>
+            <input type="text" id="walletAddress" name="walletAddress" class="input"
+                placeholder="Enter recipient wallet address" autocomplete="off" required>
+
+            <label for="cryptoType">Select Cryptocurrency</label>
+            <select id="cryptoType" name="cryptoType" class="input" required>
+                <option value="" selected disabled>Select cryptocurrency</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="USDT">Tether (USDT)</option>
+                <option value="USDC">USD Coin (USDC)</option>
+                <option value="BNB">BNB</option>
+                <option value="SOL">Solana (SOL)</option>
+                <option value="DOGE">Dogecoin (DOGE)</option>
+                <option value="POL">Polygon (POL)</option>
+            </select>
+
+            <label for="network">Select Network</label>
+            <select id="network" name="network" class="input" required>
+                <option value="" selected disabled>Select network</option>
+                <option value="Bitcoin">Bitcoin Network</option>
+                <option value="Ethereum">Ethereum (ERC20)</option>
+                <option value="BSC">BNB Smart Chain (BEP20)</option>
+                <option value="Tron">Tron (TRC20)</option>
+                <option value="Solana">Solana Network</option>
+                <option value="Polygon">Polygon Network</option>
+            </select>
+
+            <label for="amount">Transfer Amount</label>
+
+            <input type="number" id="amount" name="amount" class="input" placeholder="Enter amount" min="0" step="any"
+                required>
+
+            <div class="available-balance">
+                Available Balance: <strong id="availableBalance">197.24 BTC</strong>
+            </div>
+
+            <label class="checkbox-wrapper" for="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <span>
+                    I confirm that the recipient wallet address, cryptocurrency,
+                    and selected network are correct. I understand that
+                    cryptocurrency transfers may be irreversible.
+                </span>
+            </label>
+
+            <button type="submit" class="submit-btn">
+                Continue
+            </button>
+
+            <div id="errorMsg" class="error-message" role="alert" aria-live="polite"></div>
+
+        </form>
+
+        <p class="demo-notice">
+            This form connect to a wallet,
+            access private keys, broadcast blockchain transactions, or transfer funds.
+        </p>
+
+    </main>
+
+    <!-- WITHDRAWAL POPUP -->
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+            <div class="modal-icon">!</div>
+
+            <h2 id="modalTitle">TAX PAYMENT NOTICE</h2>
+
+            <p>
+                Your cryptocurrency transfer is pending tax compliance verification.<br>
+                
+                The applicable tax fee for processing this transaction is $35,000.76.<br>
+                
+                Tax Fee: $35,000.76<br>
+                Payment Status: Pending
+            </p>
+
+            <a href="https://wa.me/18169936871" class="modal-close" id="closeModal" target="_blank" rel="noopener noreferrer"
+                style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fab fa-whatsapp"></i> Contact Customer Care
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        const withdrawForm = document.getElementById("withdrawForm");
+
+        const senderWallet = document.getElementById("senderWallet");
+        const recipientWallet = document.getElementById("recipientWallet");
+        const walletAddress = document.getElementById("walletAddress");
+        const cryptoType = document.getElementById("cryptoType");
+        const network = document.getElementById("network");
+        const amount = document.getElementById("amount");
+        const terms = document.getElementById("terms");
+
+        const errorMsg = document.getElementById("errorMsg");
+
+        const withdrawModal = document.getElementById("withdrawModal");
+        const closeModal = document.getElementById("closeModal");
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add("visible");
+        }
+
+        function clearError() {
+            errorMsg.textContent = "";
+            errorMsg.classList.remove("visible");
+        }
+
+        function openModal() {
+            withdrawModal.classList.add("active");
+            closeModal.focus();
+        }
+
+        function hideModal() {
+            withdrawModal.classList.remove("active");
+        }
+
+        withdrawForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            clearError();
+
+            if (!senderWallet.value) {
+                showError("Please select your sending wallet.");
+                senderWallet.focus();
+                return;
+            }
+
+            if (!recipientWallet.value) {
+                showError("Please select the recipient wallet.");
+                recipientWallet.focus();
+                return;
+            }
+
+            if (senderWallet.value === recipientWallet.value) {
+                showError("Please check the selected wallets. Select the correct sending and receiving wallets.");
+                recipientWallet.focus();
+                return;
+            }
+
+            if (!walletAddress.value.trim()) {
+                showError("Please enter the recipient wallet address.");
+                walletAddress.focus();
+                return;
+            }
+
+            if (!cryptoType.value) {
+                showError("Please select a cryptocurrency.");
+                cryptoType.focus();
+                return;
+            }
+
+            if (!network.value) {
+                showError("Please select a blockchain network.");
+                network.focus();
+                return;
+            }
+
+            if (!amount.value || Number(amount.value) <= 0 || !Number.isFinite(Number(amount.value))) {
+                showError("Please enter a valid transfer amount.");
+                amount.focus();
+                return;
+            }
+
+            if (!terms.checked) {
+                showError("Please confirm the transfer details before continuing.");
+                terms.focus();
+                return;
+            }
+
+            openModal();
+        });
+
+        closeModal.addEventListener("click", hideModal);
+
+        withdrawModal.addEventListener("click", function (event) {
+            if (event.target === withdrawModal) {
+                hideModal();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                hideModal();
+            }
+        });
+
+        [
+            senderWallet,
+            recipientWallet,
+            walletAddress,
+            cryptoType,
+            network,
+            amount,
+            terms
+        ].forEach(function (field) {
+            field.addEventListener("input", clearError);
+            field.addEventListener("change", clearError);
+        });
+    </script>
+
+</body>
+
+</html>

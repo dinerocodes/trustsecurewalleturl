@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon (POL) | Wallet</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f8fa;
+            color: #17202a;
+            padding-bottom: 90px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-btn {
+            color: #17202a;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .coin-heading h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .coin-heading span {
+            color: #87919d;
+            font-size: 12px;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .header-action {
+            color: #697586;
+            font-size: 18px;
+        }
+
+        .notice {
+            margin: 18px 20px;
+            padding: 13px;
+            background: #edf5ff;
+            color: #3974b9;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .notice i {
+            margin-top: 2px;
+        }
+
+        .price-section {
+            padding: 15px 20px 20px;
+            text-align: center;
+        }
+
+        .coin-image-wrap {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 15px;
+        }
+
+        .coin-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .live-dot {
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            background: #16c784;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            right: 0;
+            bottom: 2px;
+        }
+
+        .price-section h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .price-change {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .positive {
+            color: #16a36a;
+        }
+
+        .negative {
+            color: #ea3943;
+        }
+
+        .chart-container {
+            background: #fff;
+            margin: 10px 15px 20px;
+            border-radius: 15px;
+            padding: 18px 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.025);
+        }
+
+        .chart-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-top h3 {
+            font-size: 14px;
+        }
+
+        .chart-area {
+            height: 220px;
+            position: relative;
+        }
+
+        #priceChart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #87919d;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .chart-filters {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .chart-filters button {
+            border: none;
+            background: transparent;
+            padding: 8px 10px;
+            border-radius: 7px;
+            color: #8993a0;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .chart-filters button.active {
+            background: #e9f7f1;
+            color: #16a36a;
+            font-weight: 700;
+        }
+
+        .tabs {
+            margin: 0 20px;
+            border-bottom: 1px solid #e7eaee;
+        }
+
+        .tabs span {
+            display: inline-block;
+            padding: 12px 5px;
+            color: #16a36a;
+            font-size: 13px;
+            font-weight: 700;
+            border-bottom: 2px solid #16a36a;
+        }
+
+        .balance-section {
+            background: #fff;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 14px;
+        }
+
+        .balance-label {
+            color: #8993a0;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .balance-value {
+            color: #66717f;
+            font-size: 13px;
+        }
+
+        .balance-profit {
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .market-section {
+            padding: 10px 15px;
+        }
+
+        .market-section h3 {
+            font-size: 15px;
+            margin: 5px 5px 15px;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .market-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            min-height: 78px;
+        }
+
+        .market-card span {
+            display: block;
+            color: #8993a0;
+            font-size: 11px;
+            margin-bottom: 9px;
+        }
+
+        .market-card strong {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .update-time {
+            text-align: center;
+            color: #a0a8b2;
+            font-size: 10px;
+            margin: 18px 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #fff;
+            border-top: 1px solid #edf0f2;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #929ba7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: #16a36a;
+        }
+
+        @media (min-width: 700px) {
+            body {
+                max-width: 600px;
+                margin: auto;
+                border-left: 1px solid #edf0f2;
+                border-right: 1px solid #edf0f2;
+            }
+
+            .bottom-nav {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <a href="/dashboard.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <div class="coin-heading">
+                <h2>Polygon</h2>
+                <span>POL · Polygon Ecosystem Token</span>
+            </div>
+        </div>
+
+        <i class="fa-solid fa-ellipsis-vertical header-action"></i>
+    </header>
+
+    <div class="notice">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Market information is updated using live cryptocurrency market data. Prices may change as the market
+            moves.</span>
+    </div>
+
+    <section class="price-section">
+        <div class="coin-image-wrap">
+            <img src="./pol-removebg-preview.png" alt="Polygon">
+            <span class="live-dot"></span>
+        </div>
+
+        <h1 id="polPrice">Loading...</h1>
+        <div class="price-change" id="polChange">Fetching market data...</div>
+    </section>
+
+    <section class="chart-container">
+        <div class="chart-top">
+            <h3>Price Chart</h3>
+            <span style="font-size:11px;color:#8993a0;">POL / USD</span>
+        </div>
+
+        <div class="chart-area">
+            <canvas id="priceChart"></canvas>
+            <div class="chart-loading" id="chartLoading">Loading chart...</div>
+        </div>
+
+        <div class="chart-filters">
+            <button class="active" data-days="1">24H</button>
+            <button data-days="7">1W</button>
+            <button data-days="30">1M</button>
+            <button data-days="90">3M</button>
+            <button data-days="365">1Y</button>
+        </div>
+    </section>
+
+    <div class="tabs">
+        <span>My Holdings</span>
+    </div>
+
+    <section class="balance-section">
+        <div class="balance-label">Your POL Balance</div>
+        <div class="balance-amount" id="polQuantity">0.00 POL</div>
+        <div class="balance-value" id="polBalance">$0.00</div>
+        <div class="balance-profit" id="polProfit">Estimated 24h change: $0.00</div>
+    </section>
+
+    <section class="market-section">
+        <h3>Market Statistics</h3>
+
+        <div class="market-grid">
+            <div class="market-card">
+                <span>Market Cap</span>
+                <strong id="marketCap">--</strong>
+            </div>
+
+            <div class="market-card">
+                <span>24h Trading Volume</span>
+                <strong id="volume">--</strong>
+            </div>
+
+            <div class="market-card">
+                <span>24h High</span>
+                <strong id="highPrice">--</strong>
+            </div>
+
+            <div class="market-card">
+                <span>24h Low</span>
+                <strong id="lowPrice">--</strong>
+            </div>
+
+            <div class="market-card">
+                <span>Market Rank</span>
+                <strong id="marketRank">--</strong>
+            </div>
+
+            <div class="market-card">
+                <span>Circulating Supply</span>
+                <strong id="supply">--</strong>
+            </div>
+        </div>
+    </section>
+
+    <div class="update-time" id="updateTime">
+        Last updated: Waiting for data...
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </a>
+
+        <a href="/form.html" class="nav-item">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            <span>Swap</span>
+        </a>
+
+        <a href="/recieve.html" class="nav-item">
+            <i class="fa-solid fa-qrcode"></i>
+            <span>Receive</span>
+        </a>
+
+        <a href="/buy.html" class="nav-item">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span>Buy</span>
+        </a>
+
+        <a href="/sell.html" class="nav-item">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <span>Sell</span>
+        </a>
+    </nav>
+
+    <script>
+        const HOLDINGS = 0;
+
+        const API = "https://api.coingecko.com/api/v3";
+        const COIN_ID = "polygon-ecosystem-token";
+
+        let currentDays = 1;
+        let chartPoints = [];
+        let lastPrice = null;
+
+        const money = (value) => {
+            if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+                return "--";
+            }
+
+            return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                maximumFractionDigits: 2
+            }).format(value);
+        };
+
+        const compactMoney = (value) => {
+            if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+                return "--";
+            }
+
+            return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                notation: "compact",
+                maximumFractionDigits: 2
+            }).format(value);
+        };
+
+        const compactNumber = (value) => {
+            if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+                return "--";
+            }
+
+            return new Intl.NumberFormat("en-US", {
+                notation: "compact",
+                maximumFractionDigits: 2
+            }).format(value);
+        };
+
+        async function loadPolygonData() {
+            try {
+                const response = await fetch(
+                    `${API}/coins/markets?vs_currency=usd&ids=${COIN_ID}&price_change_percentage=24h`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Market API request failed");
+                }
+
+                const data = await response.json();
+
+                if (!data.length) {
+                    throw new Error("No Polygon market data returned");
+                }
+
+                const coin = data[0];
+
+                const price = coin.current_price;
+                const change = coin.price_change_percentage_24h || 0;
+
+                lastPrice = price;
+
+                document.getElementById("polPrice").textContent = money(price);
+
+                const changeElement = document.getElementById("polChange");
+
+                changeElement.textContent =
+                    `${change >= 0 ? "+" : ""}${change.toFixed(2)}% (24h)`;
+
+                changeElement.className =
+                    `price-change ${change >= 0 ? "positive" : "negative"}`;
+
+                document.getElementById("polQuantity").textContent =
+                    `${HOLDINGS.toFixed(6)} POL`;
+
+                const balance = HOLDINGS * price;
+
+                document.getElementById("polBalance").textContent =
+                    money(balance);
+
+                const previousPrice = price / (1 + change / 100);
+                const estimatedChange = HOLDINGS * (price - previousPrice);
+
+                const profitElement = document.getElementById("polProfit");
+
+                profitElement.textContent =
+                    `Estimated 24h change: ${estimatedChange >= 0 ? "+" : ""}${money(estimatedChange)}`;
+
+                profitElement.className =
+                    `balance-profit ${estimatedChange >= 0 ? "positive" : "negative"}`;
+
+                document.getElementById("marketCap").textContent =
+                    compactMoney(coin.market_cap);
+
+                document.getElementById("volume").textContent =
+                    compactMoney(coin.total_volume);
+
+                document.getElementById("highPrice").textContent =
+                    money(coin.high_24h);
+
+                document.getElementById("lowPrice").textContent =
+                    money(coin.low_24h);
+
+                document.getElementById("marketRank").textContent =
+                    coin.market_cap_rank ? `#${coin.market_cap_rank}` : "--";
+
+                document.getElementById("supply").textContent =
+                    `${compactNumber(coin.circulating_supply)} POL`;
+
+                document.getElementById("updateTime").textContent =
+                    `Last updated: ${new Date().toLocaleString()}`;
+
+            } catch (error) {
+                console.error("Polygon market data error:", error);
+
+                document.getElementById("polPrice").textContent = "Unavailable";
+                document.getElementById("polChange").textContent =
+                    "Unable to load market data";
+
+                document.getElementById("updateTime").textContent =
+                    "Market data could not be refreshed. Please try again later.";
+            }
+        }
+
+        function drawChart(prices) {
+            const canvas = document.getElementById("priceChart");
+            const ctx = canvas.getContext("2d");
+
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+            const ratio = window.devicePixelRatio || 1;
+
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+
+            ctx.scale(ratio, ratio);
+            ctx.clearRect(0, 0, width, height);
+
+            if (!prices || prices.length < 2) {
+                return;
+            }
+
+            const values = prices.map(item => item[1]);
+
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const range = max - min || 1;
+
+            const padding = 12;
+
+            const points = values.map((value, index) => ({
+                x: padding + (index / (values.length - 1)) * (width - padding * 2),
+                y: height - padding -
+                    ((value - min) / range) * (height - padding * 2)
+            }));
+
+            const isPositive = values[values.length - 1] >= values[0];
+            const lineColor = isPositive ? "#16c784" : "#ea3943";
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, isPositive ? "rgba(22,199,132,0.20)" : "rgba(234,57,67,0.18)");
+            gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            points.forEach(point => {
+                ctx.lineTo(point.x, point.y);
+            });
+
+            ctx.lineTo(points[points.length - 1].x, height);
+            ctx.lineTo(points[0].x, height);
+            ctx.closePath();
+
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            points.forEach(point => {
+                ctx.lineTo(point.x, point.y);
+            });
+
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 2;
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.stroke();
+        }
+
+        async function loadChart(days = currentDays) {
+            currentDays = days;
+
+            const loading = document.getElementById("chartLoading");
+            loading.style.display = "flex";
+            loading.textContent = "Loading chart...";
+
+            try {
+                const response = await fetch(
+                    `${API}/coins/${COIN_ID}/market_chart?vs_currency=usd&days=${days}`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Chart API request failed");
+                }
+
+                const data = await response.json();
+
+                if (!data.prices || data.prices.length < 2) {
+                    throw new Error("Chart data unavailable");
+                }
+
+                chartPoints = data.prices;
+
+                drawChart(chartPoints);
+
+                loading.style.display = "none";
+
+            } catch (error) {
+                console.error("Polygon chart error:", error);
+
+                loading.style.display = "flex";
+                loading.textContent = "Chart data unavailable";
+            }
+        }
+
+        document.querySelectorAll(".chart-filters button").forEach(button => {
+            button.addEventListener("click", () => {
+                document.querySelectorAll(".chart-filters button").forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                button.classList.add("active");
+
+                loadChart(Number(button.dataset.days));
+            });
+        });
+
+        loadPolygonData();
+        loadChart();
+
+        setInterval(loadPolygonData, 60000);
+
+        window.addEventListener("resize", () => {
+            if (chartPoints.length) {
+                drawChart(chartPoints);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

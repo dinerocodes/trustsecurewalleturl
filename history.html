@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <link rel="stylesheet" href="index.css">
+    <title>Transactions | Crypto Wallet</title>
+    <style>
+        :root {
+            --page-bg: #f5f7fb;
+            --surface: #ffffff;
+            --soft: #f8f9fc;
+            --text: #172033;
+            --muted: #8490a3;
+            --border: #e9edf4;
+            --primary: #3569f6;
+            --green: #159b68;
+            --red: #df5362;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .app {
+            max-width: 520px;
+            min-height: 100vh;
+            margin: auto;
+            padding-bottom: 88px;
+        }
+
+        .top-bar {
+            display: grid;
+            grid-template-columns: 42px 1fr 42px;
+            align-items: center;
+            padding: 19px 20px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn,
+        .header-action {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 22px 18px;
+        }
+
+        .page-heading {
+            margin-bottom: 22px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 7px;
+            font-size: 23px;
+        }
+
+        .page-heading p,
+        .period-note {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .summary-card {
+            padding: 20px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #4779ff, #2454dc);
+            color: white;
+            box-shadow: 0 10px 25px #3569f629;
+        }
+
+        .summary-label {
+            color: #ffffffcc;
+            font-size: 12px;
+        }
+
+        .summary-amount {
+            margin: 9px 0 7px;
+            font-size: 29px;
+            font-weight: 750;
+            letter-spacing: -.7px;
+        }
+
+        .summary-caption {
+            display: block;
+            margin-bottom: 16px;
+            color: #ffffffb8;
+            font-size: 10px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #ffffff33;
+        }
+
+        .stat-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #ffffffb8;
+            font-size: 11px;
+        }
+
+        .stat-value {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .period-note {
+            margin: 14px 1px 0;
+            font-size: 11px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 23px 0 16px;
+            padding: 0 15px;
+            height: 48px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #fff;
+        }
+
+        .search-box input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .search-box input::placeholder {
+            color: #a0a8b6;
+        }
+
+        .filters {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 22px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-btn {
+            flex-shrink: 0;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            background: #fff;
+            color: #687386;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .result-count {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .transaction-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 13px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .transaction-card:hover {
+            border-color: #b9caff;
+        }
+
+        .coin-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 15px;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .coin-icon.deposit {
+            background: #e7f8ef;
+            color: var(--green);
+        }
+
+        .coin-icon.withdraw {
+            background: #fff0f0;
+            color: #df4753;
+        }
+
+        .coin-icon.swap,
+        .coin-icon.buy {
+            background: #edf2ff;
+            color: var(--primary);
+        }
+
+        .transaction-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaction-name {
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .transaction-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .transaction-right {
+            text-align: right;
+            min-width: 96px;
+        }
+
+        .transaction-amount {
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .transaction-amount.positive {
+            color: var(--green);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 7px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status.completed {
+            background: #e7f8ef;
+            color: #16875d;
+        }
+
+        .status.pending {
+            background: #fff5dc;
+            color: #a97916;
+        }
+
+        .status.failed {
+            background: #ffeded;
+            color: #d63c49;
+        }
+
+        .empty-state {
+            display: none;
+            padding: 42px 20px;
+            border: 1px dashed #d9e0ed;
+            border-radius: 18px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .empty-state.show {
+            display: block;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+            background: #121d338c;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 490px;
+            max-height: 85vh;
+            overflow: auto;
+            padding: 24px 20px;
+            border-radius: 24px;
+            background: #fff;
+        }
+
+        .modal-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-top h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .close-modal {
+            width: 35px;
+            height: 35px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .detail-icon {
+            display: grid;
+            place-items: center;
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 14px;
+            border-radius: 20px;
+            background: #edf2ff;
+            color: var(--primary);
+            font-size: 27px;
+        }
+
+        .detail-title,
+        .detail-amount {
+            text-align: center;
+        }
+
+        .detail-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .detail-amount {
+            margin-bottom: 13px;
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        .detail-status {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .detail-list {
+            padding: 16px;
+            border-radius: 15px;
+            background: var(--soft);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+            font-size: 12px;
+        }
+
+        .detail-row:last-child {
+            margin: 0;
+        }
+
+        .detail-row span {
+            color: var(--muted);
+        }
+
+        .detail-row strong {
+            max-width: 62%;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .copy-btn {
+            border: 0;
+            background: none;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .-notice {
+            margin-top: 17px;
+            padding: 13px;
+            border: 1px solid #f0dfa9;
+            border-radius: 12px;
+            background: #fff8e7;
+            color: #7b6123;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            z-index: 50;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            width: 100%;
+            max-width: 520px;
+            padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+            border-top: 1px solid var(--border);
+            background: #fffffff7;
+            transform: translateX(-50%);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 2px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 19px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        @media(min-width:600px) {
+            .modal-overlay {
+                align-items: center;
+            }
+        }
+
+        @media(max-width:360px) {
+            .content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .transaction-card {
+                gap: 9px;
+                padding: 12px 9px;
+            }
+
+            .coin-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .transaction-right {
+                min-width: 86px;
+            }
+
+            .summary-amount {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header class="top-bar">
+            <a href="./dashboard.html" class="back-btn" aria-label="Back to dashboard">←</a>
+            <div class="header-title">
+                Transactions
+                <span class="header-subtitle">Your wallet activity</span>
+            </div>
+            <button class="header-action" id="refreshBtn" aria-label="Refresh transactions">↻</button>
+        </header>
+
+        <section class="content">
+
+            <div class="page-heading">
+                <h1>Transaction history</h1>
+                <p>View and manage your wallet transaction records.</p>
+            </div>
+
+            <section class="summary-card">
+                <div class="summary-label">Current wallet balance</div>
+                <div class="summary-amount" id="walletBalance">$15,000,302.24</div>
+
+                <div class="summary-stats">
+                    <div>
+                        <span class="stat-label">Transactions</span>
+                        <span class="stat-value" id="totalCount">0</span>
+                    </div>
+                    <div>
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-value" id="completedCount">0</span>
+                    </div>
+                    <div>
+                        <span class="stat-label">Pending</span>
+                        <span class="stat-value" id="pendingCount">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <p class="period-note">
+                History period: January 5, 2026 — November 2, 2026 .
+            </p>
+
+            <label class="search-box">
+                <span>⌕</span>
+                <input type="search" id="searchInput" placeholder="Search transactions..."
+                    aria-label="Search transactions">
+            </label>
+
+            <div class="filters" role="group" aria-label="Filter transactions">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="deposit">Received</button>
+                <button class="filter-btn" data-filter="withdraw">Sent</button>
+                <button class="filter-btn" data-filter="swap">Swaps</button>
+                <button class="filter-btn" data-filter="buy">Purchases</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="failed">Failed</button>
+            </div>
+
+            <div class="section-heading">
+                <h2>Recent activity</h2>
+                <span class="result-count" id="resultCount">0 records</span>
+            </div>
+
+            <div class="transaction-list" id="transactionList"></div>
+
+            <div class="empty-state" id="emptyState">
+                <h3>No transactions found</h3>
+                <p>Try another search or filter.</p>
+            </div>
+
+        </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+        <a href="index.html" class="nav-item active" aria-current="page">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a href="swap.html" class="nav-item">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i><span>Swap</span>
+        </a>
+        <a href="earn.html" class="nav-item">
+            <i class="fa-solid fa-coins"></i><span>Earn</span>
+        </a>
+        <a href="discover.html" class="nav-item">
+            <i class="fa-regular fa-compass"></i><span>Discover</span>
+        </a>
+    </nav>
+
+    <div class="modal-overlay" id="detailsModal" role="dialog" aria-modal="true" aria-labelledby="detailHeading"
+        aria-hidden="true">
+        <div class="modal">
+
+            <div class="modal-top">
+                <h2 id="detailHeading">Transaction details</h2>
+                <button class="close-modal" id="closeModal" aria-label="Close details">×</button>
+            </div>
+
+            <div class="detail-icon" id="detailIcon">⇄</div>
+            <h3 class="detail-title" id="detailType">Transaction</h3>
+            <div class="detail-amount" id="detailAmount">$0.00</div>
+
+            <div class="detail-status">
+                <span class="status pending" id="detailStatus">Pending</span>
+            </div>
+
+            <div class="detail-list">
+                <div class="detail-row">
+                    <span>Asset</span>
+                    <strong id="detailAsset">USDT</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Network</span>
+                    <strong id="detailNetwork">TRON (TRC20)</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Transaction ID</span>
+                    <strong id="detailId">—</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Date</span>
+                    <strong id="detailDate">—</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Fee</span>
+                    <strong id="detailFee">$0.00</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Balance after</span>
+                    <strong id="detailBalanceAfter">—</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Reference</span>
+                    <strong>
+                        <span id="detailReference">—</span>
+                        <button class="copy-btn" id="copyReference">Copy</button>
+                    </strong>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <script>
+        // SAMPLE DATA ONLY. Replace with records from your authenticated backend.
+
+        const transactionTemplates = [
+            {
+                type: "deposit",
+                name: "USDT Received",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 12500,
+                quantity: 12500,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "BTC Sent",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 4250,
+                quantity: 0.0612,
+                fee: 8.5,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "USDT to ETH",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 3200,
+                quantity: 1.04,
+                fee: 4.2,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "ETH Received",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 18750,
+                quantity: 6.1,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDT Withdrawal",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 6800,
+                quantity: 6800,
+                fee: 2,
+                status: "completed"
+            },
+            {
+                type: "buy",
+                name: "BTC Purchased",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 9500,
+                quantity: 0.137,
+                fee: 19,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "USDT to BNB",
+                asset: "BNB",
+                network: "BNB Smart Chain",
+                amount: 2100,
+                quantity: 3.25,
+                fee: 2.1,
+                status: "pending"
+            },
+            {
+                type: "deposit",
+                name: "USDC Received",
+                asset: "USDC",
+                network: "Ethereum",
+                amount: 22000,
+                quantity: 22000,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "ETH Sent",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 7400,
+                quantity: 2.3,
+                fee: 6.4,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "Bitcoin Received",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 15500,
+                quantity: 0.225,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDT Transfer Failed",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 1800,
+                quantity: 1800,
+                fee: 0,
+                status: "failed"
+            },
+            {
+                type: "buy",
+                name: "ETH Purchased",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 5400,
+                quantity: 1.75,
+                fee: 10.8,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "USDT Deposit",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 8500,
+                quantity: 8500,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "BNB Sent",
+                asset: "BNB",
+                network: "BNB Smart Chain",
+                amount: 2600,
+                quantity: 4.02,
+                fee: 3.5,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "BTC to USDT",
+                asset: "USDT",
+                network: "Bitcoin",
+                amount: 7100,
+                quantity: 7100,
+                fee: 7.1,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "USDC Deposit",
+                asset: "USDC",
+                network: "Ethereum",
+                amount: 14300,
+                quantity: 14300,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "ETH Withdrawal",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 3900,
+                quantity: 1.2,
+                fee: 5.2,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "BTC Received",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 11200,
+                quantity: 0.162,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "buy",
+                name: "SOL Purchased",
+                asset: "SOL",
+                network: "Solana",
+                amount: 4800,
+                quantity: 31.5,
+                fee: 9.6,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "USDT Received",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 17500,
+                quantity: 17500,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDC Sent",
+                asset: "USDC",
+                network: "Ethereum",
+                amount: 6200,
+                quantity: 6200,
+                fee: 4.5,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "ETH to BTC",
+                asset: "BTC",
+                network: "Ethereum",
+                amount: 5600,
+                quantity: 0.081,
+                fee: 5.6,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "BNB Received",
+                asset: "BNB",
+                network: "BNB Smart Chain",
+                amount: 7600,
+                quantity: 11.7,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "BTC Transfer Failed",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 2300,
+                quantity: 0.033,
+                fee: 0,
+                status: "failed"
+            },
+            {
+                type: "buy",
+                name: "USDT Purchased",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 9800,
+                quantity: 9800,
+                fee: 19.6,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "ETH Deposit",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 12600,
+                quantity: 4.1,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDT Sent",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 4100,
+                quantity: 4100,
+                fee: 2,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "USDT to SOL",
+                asset: "SOL",
+                network: "Solana",
+                amount: 3500,
+                quantity: 22.8,
+                fee: 3.5,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "USDC Received",
+                asset: "USDC",
+                network: "Ethereum",
+                amount: 19500,
+                quantity: 19500,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "BNB Withdrawal",
+                asset: "BNB",
+                network: "BNB Smart Chain",
+                amount: 2800,
+                quantity: 4.3,
+                fee: 3,
+                status: "completed"
+            },
+            {
+                type: "buy",
+                name: "BTC Purchased",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 6700,
+                quantity: 0.097,
+                fee: 13.4,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "USDT Received",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 24000,
+                quantity: 24000,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "ETH Sent",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 5100,
+                quantity: 1.6,
+                fee: 5.1,
+                status: "completed"
+            },
+            {
+                type: "swap",
+                name: "BTC to USDT",
+                asset: "USDT",
+                network: "Bitcoin",
+                amount: 8900,
+                quantity: 8900,
+                fee: 8.9,
+                status: "completed"
+            },
+            {
+                type: "deposit",
+                name: "SOL Received",
+                asset: "SOL",
+                network: "Solana",
+                amount: 7300,
+                quantity: 47.8,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDT Withdrawal",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 5600,
+                quantity: 5600,
+                fee: 2,
+                status: "pending"
+            },
+            {
+                type: "deposit",
+                name: "BTC Received",
+                asset: "BTC",
+                network: "Bitcoin",
+                amount: 16500,
+                quantity: 0.239,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "buy",
+                name: "ETH Purchased",
+                asset: "ETH",
+                network: "Ethereum",
+                amount: 8200,
+                quantity: 2.67,
+                fee: 16.4,
+                status: "pending"
+            },
+            {
+                type: "deposit",
+                name: "USDC Received",
+                asset: "USDC",
+                network: "Ethereum",
+                amount: 13500,
+                quantity: 13500,
+                fee: 0,
+                status: "completed"
+            },
+            {
+                type: "withdraw",
+                name: "USDT Sent",
+                asset: "USDT",
+                network: "TRON (TRC20)",
+                amount: 2900,
+                quantity: 2900,
+                fee: 2,
+                status: "completed"
+            }
+        ];
+
+        const TARGET_BALANCE = 15000302.24;
+
+        const money = value =>
+            new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD"
+            }).format(value);
+
+        const formatDate = value =>
+            new Date(value).toLocaleString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+        const icons = {
+            deposit: "↓",
+            withdraw: "↑",
+            swap: "⇄",
+            buy: "+"
+        };
+
+        const statusLabels = {
+            completed: "Completed",
+            pending: "Pending",
+            failed: "Failed"
+        };
+
+        // Generate exactly 40 dated  records between January 5 and November 2.
+        const startDate = new Date(2026, 0, 5, 9, 0, 0);
+        const endDate = new Date(2026, 10, 2, 15, 30, 0);
+
+        const transactions = transactionTemplates.map((template, index) => {
+            const transaction = { ...template };
+
+            const timestamp = startDate.getTime() +
+                (endDate.getTime() - startDate.getTime()) * (index / 39);
+
+            transaction.id = `TX-2026-${String(index + 1).padStart(4, "0")}`;
+            transaction.reference = `-REF-${String(index + 1).padStart(5, "0")}`;
+            transaction.date = new Date(timestamp).toISOString().slice(0, 19);
+
+            return transaction;
+        });
+
+        const signedMovement = transaction => {
+            if (transaction.status !== "completed") return 0;
+
+            if (transaction.type === "deposit") {
+                return transaction.amount;
+            }
+
+            if (
+                transaction.type === "withdraw" ||
+                transaction.type === "buy"
+            ) {
+                return -transaction.amount;
+            }
+
+            return 0;
+        };
+
+        const completedNet = transactions.reduce(
+            (sum, transaction) => sum + signedMovement(transaction),
+            0
+        );
+
+        const openingBalance = Number(
+            (TARGET_BALANCE - completedNet).toFixed(2)
+        );
+
+        let running = openingBalance;
+
+        [...transactions]
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .forEach(transaction => {
+                running = Number(
+                    (running + signedMovement(transaction)).toFixed(2)
+                );
+
+                transaction.balanceAfter = running;
+            });
+
+        document.getElementById("walletBalance").textContent =
+            money(TARGET_BALANCE);
+
+        const list = document.getElementById("transactionList");
+        const search = document.getElementById("searchInput");
+        const empty = document.getElementById("emptyState");
+        const count = document.getElementById("resultCount");
+        const modal = document.getElementById("detailsModal");
+        const close = document.getElementById("closeModal");
+
+        let activeFilter = "all";
+        let selected = null;
+
+        function updateSummary() {
+            document.getElementById("totalCount").textContent =
+                transactions.length;
+
+            document.getElementById("completedCount").textContent =
+                transactions.filter(t => t.status === "completed").length;
+
+            document.getElementById("pendingCount").textContent =
+                transactions.filter(t => t.status === "pending").length;
+        }
+
+        function filtered() {
+            const query = search.value.trim().toLowerCase();
+
+            return transactions
+                .filter(transaction => {
+                    const matchesFilter =
+                        activeFilter === "all" ||
+                        transaction.type === activeFilter ||
+                        transaction.status === activeFilter;
+
+                    const searchableText = [
+                        transaction.id,
+                        transaction.name,
+                        transaction.asset,
+                        transaction.network,
+                        transaction.status,
+                        transaction.reference
+                    ].join(" ").toLowerCase();
+
+                    return matchesFilter && searchableText.includes(query);
+                })
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        function render() {
+            const rows = filtered();
+
+            list.replaceChildren();
+
+            count.textContent =
+                `${rows.length} record${rows.length === 1 ? "" : "s"}`;
+
+            empty.classList.toggle("show", rows.length === 0);
+
+            rows.forEach(transaction => {
+                const card = document.createElement("article");
+
+                card.className = "transaction-card";
+                card.tabIndex = 0;
+                card.setAttribute("role", "button");
+
+                const icon = document.createElement("div");
+                icon.className = `coin-icon ${transaction.type}`;
+                icon.textContent = icons[transaction.type];
+
+                const info = document.createElement("div");
+                info.className = "transaction-info";
+
+                const name = document.createElement("div");
+                name.className = "transaction-name";
+                name.textContent = transaction.name;
+
+                const meta = document.createElement("div");
+                meta.className = "transaction-meta";
+                meta.textContent =
+                    `${transaction.asset} · ${formatDate(transaction.date)}`;
+
+                info.append(name, meta);
+
+                const right = document.createElement("div");
+                right.className = "transaction-right";
+
+                const amount = document.createElement("div");
+                amount.className =
+                    "transaction-amount " +
+                    (transaction.type === "deposit" ? "positive" : "negative");
+
+                amount.textContent =
+                    (transaction.type === "deposit"
+                        ? "+"
+                        : transaction.type === "withdraw" ||
+                            transaction.type === "buy"
+                            ? "−"
+                            : "") + money(transaction.amount);
+
+                const status = document.createElement("span");
+                status.className = `status ${transaction.status}`;
+                status.textContent = statusLabels[transaction.status];
+
+                right.append(amount, status);
+                card.append(icon, info, right);
+
+                card.addEventListener("click", () => openDetails(transaction));
+
+                card.addEventListener("keydown", event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openDetails(transaction);
+                    }
+                });
+
+                list.append(card);
+            });
+        }
+
+        function openDetails(transaction) {
+            selected = transaction;
+
+            document.getElementById("detailIcon").textContent =
+                icons[transaction.type];
+
+            document.getElementById("detailType").textContent =
+                transaction.name;
+
+            document.getElementById("detailAmount").textContent =
+                money(transaction.amount);
+
+            const status = document.getElementById("detailStatus");
+            status.className = `status ${transaction.status}`;
+            status.textContent = statusLabels[transaction.status];
+
+            document.getElementById("detailAsset").textContent =
+                `${transaction.asset} (${transaction.quantity} units)`;
+
+            document.getElementById("detailNetwork").textContent =
+                transaction.network;
+
+            document.getElementById("detailId").textContent =
+                transaction.id;
+
+            document.getElementById("detailDate").textContent =
+                formatDate(transaction.date);
+
+            document.getElementById("detailFee").textContent =
+                money(transaction.fee);
+
+            document.getElementById("detailBalanceAfter").textContent =
+                transaction.status === "completed"
+                    ? money(transaction.balanceAfter)
+                    : "Unchanged (not completed)";
+
+            document.getElementById("detailReference").textContent =
+                transaction.reference;
+
+            modal.classList.add("show");
+            modal.setAttribute("aria-hidden", "false");
+        }
+
+        function hideModal() {
+            modal.classList.remove("show");
+            modal.setAttribute("aria-hidden", "true");
+            selected = null;
+        }
+
+        document.querySelectorAll("[data-filter]").forEach(button => {
+            button.addEventListener("click", () => {
+                activeFilter = button.dataset.filter;
+
+                document.querySelectorAll("[data-filter]").forEach(item => {
+                    item.classList.toggle("active", item === button);
+                });
+
+                render();
+            });
+        });
+
+        search.addEventListener("input", render);
+
+        close.addEventListener("click", hideModal);
+
+        modal.addEventListener("click", event => {
+            if (event.target === modal) {
+                hideModal();
+            }
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                hideModal();
+            }
+        });
+
+        document.getElementById("copyReference").addEventListener(
+            "click",
+            async () => {
+                if (!selected) return;
+
+                const button = document.getElementById("copyReference");
+
+                try {
+                    await navigator.clipboard.writeText(selected.reference);
+                    button.textContent = "Copied!";
+                } catch {
+                    button.textContent = "Copy manually";
+                }
+
+                setTimeout(() => {
+                    button.textContent = "Copy";
+                }, 1800);
+            }
+        );
+
+        document.getElementById("refreshBtn").addEventListener("click", () => {
+            updateSummary();
+            render();
+        });
+
+        updateSummary();
+        render();
+    </script>
+
+
+</body>
+
+</html>

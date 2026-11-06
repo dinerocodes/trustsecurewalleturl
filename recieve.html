@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crypto Wallet | Receive</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* =====================================
+           GLOBAL STYLES
+        ===================================== */
+
+        :root {
+            --primary: #3375f6;
+            --primary-dark: #245bd1;
+            --background: #f5f7fb;
+            --surface: #ffffff;
+            --text: #172033;
+            --muted: #788195;
+            --border: #e8ebf2;
+            --success: #15803d;
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid rgba(51, 117, 246, 0.3);
+            outline-offset: 3px;
+        }
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 44px 1fr 44px;
+            align-items: center;
+            min-height: 68px;
+            padding: 10px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .header-back,
+        .header-placeholder {
+            width: 40px;
+            height: 40px;
+        }
+
+        .header-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .header-back:hover {
+            background: var(--background);
+        }
+
+        /* =====================================
+           PAGE LAYOUT
+        ===================================== */
+
+        .page-container {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 28px 20px 50px;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .page-heading h2 {
+            margin-bottom: 8px;
+            font-size: 25px;
+            font-weight: 750;
+        }
+
+        .page-heading p {
+            max-width: 570px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* =====================================
+           DEMO NOTICE
+        ===================================== */
+
+        .demo-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding: 14px;
+            border: 1px solid #f0d9a7;
+            border-radius: 12px;
+            background: #fff9e9;
+            color: #76521b;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .demo-notice i {
+            margin-top: 3px;
+        }
+
+        /* =====================================
+           SEARCH
+        ===================================== */
+
+        .search-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-container>i {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: #8b93a5;
+            pointer-events: none;
+        }
+
+        .search-container input {
+            display: block;
+            width: 100%;
+            height: 50px;
+            padding: 0 45px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(51, 117, 246, 0.09);
+        }
+
+        .search-container input::placeholder {
+            color: #9ba3b3;
+        }
+
+        .clear-search {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            display: none;
+            width: 30px;
+            height: 30px;
+            transform: translateY(-50%);
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .clear-search.visible {
+            display: block;
+        }
+
+        .clear-search:hover {
+            background: var(--background);
+        }
+
+        /* =====================================
+           FILTERS
+        ===================================== */
+
+        .filters {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .network-filter {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+        }
+
+        .network-filter i {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .network-filter select {
+            max-width: 230px;
+            min-height: 42px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .asset-count {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =====================================
+           SECTION TITLE
+        ===================================== */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .section-heading h3 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .section-heading span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =====================================
+           CRYPTO LIST
+        ===================================== */
+
+        .crypto-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .crypto-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            min-width: 0;
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .crypto-item:hover {
+            border-color: #d7e2fa;
+            box-shadow: 0 5px 18px rgba(25, 48, 92, 0.04);
+        }
+
+        .crypto-info {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .coin-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            width: 46px;
+            height: 46px;
+            padding: 4px;
+            border: 1px solid #f0f1f5;
+            border-radius: 50%;
+            background: #ffffff;
+        }
+
+        .coin-logo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .crypto-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .crypto-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 5px;
+        }
+
+        .crypto-title strong {
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .network-badge {
+            display: inline-block;
+            max-width: 100%;
+            padding: 4px 7px;
+            overflow: hidden;
+            border-radius: 6px;
+            background: #f0f3f9;
+            color: #697489;
+            font-size: 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .coin-name {
+            margin-bottom: 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .crypto-address {
+            overflow-wrap: anywhere;
+            color: #929aab;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .crypto-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 39px;
+            height: 39px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: #ffffff;
+            color: #697489;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .action-button:hover {
+            border-color: #cbdafa;
+            background: #f0f5ff;
+            color: var(--primary);
+        }
+
+        .action-button.copied {
+            border-color: #b7e4c7;
+            background: #edfff3;
+            color: var(--success);
+        }
+
+        /* =====================================
+           EMPTY SEARCH STATE
+        ===================================== */
+
+        .empty-state {
+            display: none;
+            padding: 45px 20px;
+            border: 1px dashed #d9deea;
+            border-radius: var(--radius);
+            background: var(--surface);
+            text-align: center;
+        }
+
+        .empty-state.visible {
+            display: block;
+        }
+
+        .empty-state i {
+            margin-bottom: 14px;
+            color: #a0a9bb;
+            font-size: 30px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =====================================
+           QR MODAL
+        ===================================== */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 390px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px 24px;
+            border-radius: 20px;
+            background: #ffffff;
+            text-align: center;
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            background: #f2f4f8;
+            color: #5c6577;
+            cursor: pointer;
+        }
+
+        .modal-coin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            margin: 4px auto 14px;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+        }
+
+        .modal-coin img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 7px;
+            font-size: 21px;
+        }
+
+        .modal-network {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: #f0f3f9;
+            color: #697489;
+            font-size: 12px;
+        }
+
+        #qrCode {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 210px;
+            margin: 0 auto 20px;
+        }
+
+        #qrCode img,
+        #qrCode canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .modal-address-label {
+            margin-bottom: 8px;
+            text-align: left;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .modal-address {
+            padding: 12px;
+            overflow-wrap: anywhere;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #f8f9fc;
+            font-size: 12px;
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        .modal-warning {
+            margin: 13px 0 18px;
+            color: #9a6b22;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .copy-address-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            width: 100%;
+            min-height: 47px;
+            border: none;
+            border-radius: 11px;
+            background: var(--primary);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-address-button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* =====================================
+           TOAST NOTIFICATION
+        ===================================== */
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: calc(100vw - 40px);
+            padding: 13px 17px;
+            border-radius: 12px;
+            background: #172033;
+            color: #ffffff;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+        }
+
+        .toast.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* =====================================
+           RESPONSIVE STYLES
+        ===================================== */
+
+        @media (min-width: 900px) {
+            .page-container {
+                padding-top: 36px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                min-height: 60px;
+                padding: 8px 12px;
+            }
+
+            .page-container {
+                padding: 23px 14px 35px;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+
+            .crypto-item {
+                gap: 9px;
+                padding: 13px 11px;
+            }
+
+            .crypto-info {
+                gap: 10px;
+            }
+
+            .coin-logo {
+                flex-basis: 40px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .crypto-actions {
+                gap: 5px;
+            }
+
+            .action-button {
+                width: 35px;
+                height: 35px;
+                border-radius: 9px;
+            }
+
+            .network-filter select {
+                max-width: 190px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .page-container {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .crypto-item {
+                padding: 12px 9px;
+            }
+
+            .crypto-info {
+                gap: 8px;
+            }
+
+            .coin-logo {
+                flex-basis: 34px;
+                width: 34px;
+                height: 34px;
+                padding: 2px;
+            }
+
+            .crypto-title strong {
+                font-size: 14px;
+            }
+
+            .network-badge {
+                font-size: 9px;
+                padding: 3px 5px;
+            }
+
+            .action-button {
+                width: 31px;
+                height: 34px;
+            }
+
+            .network-filter {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .network-filter select {
+                flex: 1;
+                max-width: none;
+            }
+
+            .asset-count {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <a href="./dashboard.html" class="header-back" aria-label="Back to dashboard">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h1>Receive</h1>
+
+        <div class="header-placeholder" aria-hidden="true"></div>
+    </header>
+
+    <main class="page-container">
+
+        <!-- PAGE INTRODUCTION -->
+        <section class="page-heading">
+            <h2>Receive Crypto</h2>
+            <p>
+                Select a cryptocurrency to view its receiving address and QR code.
+                Always verify the network before receiving funds.
+            </p>
+        </section>
+
+        <!-- DEMO WARNING -->
+        <div class="demo-notice">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>
+                <strong>Coin Mode:</strong> The addresses on this page verified. verified wallet addresses before
+                using this page to receive cryptocurrency.
+            </p>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="search" id="cryptoSearch" placeholder="Search coins, networks or addresses..."
+                aria-label="Search cryptocurrencies" autocomplete="off">
+
+            <button type="button" id="clearSearch" class="clear-search" aria-label="Clear search">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- NETWORK FILTER -->
+        <div class="filters">
+            <div class="network-filter">
+                <i class="fa-solid fa-layer-group"></i>
+
+                <select id="networkFilter" aria-label="Filter by network">
+                    <option value="all">All Networks</option>
+                    <option value="Bitcoin">Bitcoin</option>
+                    <option value="Ethereum">Ethereum</option>
+                    <option value="Solana">Solana</option>
+                    <option value="BNB Smart Chain">BNB Smart Chain</option>
+                    <option value="Polygon">Polygon</option>
+                    <option value="Dogecoin">Dogecoin</option>
+                </select>
+            </div>
+
+            <span class="asset-count" id="assetCount" aria-live="polite">
+                10 assets
+            </span>
+        </div>
+
+        <!-- CRYPTO LIST -->
+        <section>
+            <div class="section-heading">
+                <h3>Available assets</h3>
+                <span>Choose an asset to receive</span>
+            </div>
+
+            <div class="crypto-list" id="cryptoList">
+
+                <!-- BITCOIN -->
+                <article class="crypto-item" data-symbol="BTC" data-name="Bitcoin" data-network="Bitcoin"
+                    data-address="2086gv3jq...0wy2iy2yx" data-logo="./Bitcoin-Logo.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./Bitcoin-Logo.png" alt="Bitcoin" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>BTC</strong>
+                                <span class="network-badge">Bitcoin</span>
+                            </div>
+
+                            <div class="coin-name">Bitcoin</div>
+                            <div class="crypto-address">2086gv3jq...0wy2iy2yx</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show Bitcoin QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy Bitcoin address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- ETHEREUM -->
+                <article class="crypto-item" data-symbol="ETH" data-name="Ethereum" data-network="Ethereum"
+                    data-address="0x3A567...66F4E9B" data-logo="./ethereum-1-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./ethereum-1-removebg-preview.png" alt="Ethereum" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>ETH</strong>
+                                <span class="network-badge">Ethereum</span>
+                            </div>
+
+                            <div class="coin-name">Ethereum</div>
+                            <div class="crypto-address">0x3A567...66F4E9B</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show Ethereum QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy Ethereum address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- SOLANA -->
+                <article class="crypto-item" data-symbol="SOL" data-name="Solana" data-network="Solana"
+                    data-address="6FEtS9Z...LDL6hPp" data-logo="./Solana_logo.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./Solana_logo.png" alt="Solana" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>SOL</strong>
+                                <span class="network-badge">Solana</span>
+                            </div>
+
+                            <div class="coin-name">Solana</div>
+                            <div class="crypto-address">6FEtS9Z...LDL6hPp</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show Solana QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy Solana address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- USDC -->
+                <article class="crypto-item" data-symbol="USDC" data-name="USD Coin" data-network="Ethereum"
+                    data-address="629892yfiZ...L209dss9Pp" data-logo="./usdc.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./usdc.png" alt="USD Coin" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>USDC</strong>
+                                <span class="network-badge">Ethereum</span>
+                            </div>
+
+                            <div class="coin-name">USD Coin</div>
+                            <div class="crypto-address">629892yfiZ...L209dss9Pp</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show USDC QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy USDC address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- BNB -->
+                <article class="crypto-item" data-symbol="BNB" data-name="BNB" data-network="BNB Smart Chain"
+                    data-address="ugi2ui2uZ...98967tiysif" data-logo="./bnb-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./bnb-removebg-preview.png" alt="BNB" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>BNB</strong>
+                                <span class="network-badge">BNB Smart Chain</span>
+                            </div>
+
+                            <div class="coin-name">BNB</div>
+                            <div class="crypto-address">ugi2ui2uZ...98967tiysif</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show BNB QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy BNB address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- WRAPPED ETHEREUM -->
+                <article class="crypto-item" data-symbol="WETH" data-name="Wrapped Ether" data-network="Ethereum"
+                    data-address="2ou9su9dj...989d7g9ydd" data-logo="./ethereum-1-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./ethereum-1-removebg-preview.png" alt="Wrapped Ether" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>WETH</strong>
+                                <span class="network-badge">Ethereum</span>
+                            </div>
+
+                            <div class="coin-name">Wrapped Ether</div>
+                            <div class="crypto-address">2ou9su9dj...989d7g9ydd</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show WETH QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy WETH address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- TRUST WALLET TOKEN -->
+                <article class="crypto-item" data-symbol="TWT" data-name="Trust Wallet Token"
+                    data-network="BNB Smart Chain" data-address="989gs9fi3...kjaiy87kjw"
+                    data-logo="./trust-wallet-token-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./trust-wallet-token-removebg-preview.png" alt="Trust Wallet Token"
+                                loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>TWT</strong>
+                                <span class="network-badge">BNB Smart Chain</span>
+                            </div>
+
+                            <div class="coin-name">Trust Wallet Token</div>
+                            <div class="crypto-address">989gs9fi3...kjaiy87kjw</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show TWT QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy TWT address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- DOGECOIN -->
+                <article class="crypto-item" data-symbol="DOGE" data-name="Dogecoin" data-network="Dogecoin"
+                    data-address="38heEtS9Z...07376hPp" data-logo="./doge.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./doge.png" alt="Dogecoin" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>DOGE</strong>
+                                <span class="network-badge">Dogecoin</span>
+                            </div>
+
+                            <div class="coin-name">Dogecoin</div>
+                            <div class="crypto-address">38heEtS9Z...07376hPp</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show Dogecoin QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy Dogecoin address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- POLYGON -->
+                <article class="crypto-item" data-symbol="POL" data-name="Polygon" data-network="Polygon"
+                    data-address="9897tyg3vv...kjbs87877" data-logo="./pol-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./pol-removebg-preview.png" alt="Polygon" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>POL</strong>
+                                <span class="network-badge">Polygon</span>
+                            </div>
+
+                            <div class="coin-name">Polygon</div>
+                            <div class="crypto-address">9897tyg3vv...kjbs87877</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show Polygon QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy Polygon address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- BUSD -->
+                <article class="crypto-item" data-symbol="BUSD" data-name="Binance USD" data-network="BNB Smart Chain"
+                    data-address="989ugdyviyv...iusb9797sh" data-logo="./bnb-removebg-preview.png">
+                    <div class="crypto-info">
+                        <div class="coin-logo">
+                            <img src="./bnb-removebg-preview.png" alt="Binance USD" loading="lazy">
+                        </div>
+
+                        <div class="crypto-text">
+                            <div class="crypto-title">
+                                <strong>BUSD</strong>
+                                <span class="network-badge">BNB Smart Chain</span>
+                            </div>
+
+                            <div class="coin-name">Binance USD</div>
+                            <div class="crypto-address">989ugdyviyv...iusb9797sh</div>
+                        </div>
+                    </div>
+
+                    <div class="crypto-actions">
+                        <button class="action-button qr-button" type="button" aria-label="Show BUSD QR code"
+                            title="Show QR code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+
+                        <button class="action-button copy-button" type="button" aria-label="Copy BUSD address"
+                            title="Copy address">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- NO RESULTS -->
+            <div class="empty-state" id="emptyState">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h3>No assets found</h3>
+                <p>Try a different coin name, address or network.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- QR CODE MODAL -->
+    <div class="modal" id="qrModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-content">
+
+            <button type="button" class="modal-close" id="closeModal" aria-label="Close QR code">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-coin">
+                <img id="modalLogo" src="./Bitcoin-Logo.png" alt="">
+            </div>
+
+            <h2 id="modalTitle">Receive BTC</h2>
+
+            <span class="modal-network" id="modalNetwork">Bitcoin</span>
+
+            <div id="qrCode"></div>
+
+            <p class="modal-address-label">Receiving address</p>
+
+            <div class="modal-address" id="modalAddress"></div>
+
+            <p class="modal-warning">
+                Demo address only. Do not send funds to this sample address.
+                Replace it with a complete, verified wallet address before use.
+            </p>
+
+            <button type="button" class="copy-address-button" id="modalCopyButton">
+                <i class="fa-regular fa-copy"></i>
+                Copy address
+            </button>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Copied successfully</span>
+    </div>
+
+    <script>
+        // =====================================
+        // ELEMENTS
+        // =====================================
+
+        const searchInput = document.getElementById("cryptoSearch");
+        const clearSearchButton = document.getElementById("clearSearch");
+        const networkFilter = document.getElementById("networkFilter");
+        const assetCount = document.getElementById("assetCount");
+        const cryptoItems = Array.from(
+            document.querySelectorAll(".crypto-item")
+        );
+
+        const emptyState = document.getElementById("emptyState");
+
+        const qrModal = document.getElementById("qrModal");
+        const closeModalButton = document.getElementById("closeModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalNetwork = document.getElementById("modalNetwork");
+        const modalLogo = document.getElementById("modalLogo");
+        const modalAddress = document.getElementById("modalAddress");
+        const qrCodeContainer = document.getElementById("qrCode");
+        const modalCopyButton = document.getElementById("modalCopyButton");
+
+        const toast = document.getElementById("toast");
+        const toastMessage = document.getElementById("toastMessage");
+
+        let currentAsset = null;
+        let toastTimer = null;
+        let lastFocusedElement = null;
+
+        // =====================================
+        // TOAST NOTIFICATION
+        // =====================================
+
+        function showToast(message, success = true) {
+            toastMessage.textContent = message;
+
+            const icon = toast.querySelector("i");
+
+            icon.className = success
+                ? "fa-solid fa-circle-check"
+                : "fa-solid fa-circle-exclamation";
+
+            toast.classList.add("visible");
+
+            clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(function () {
+                toast.classList.remove("visible");
+            }, 2800);
+        }
+
+        // =====================================
+        // SEARCH AND NETWORK FILTER
+        // =====================================
+
+        function filterAssets() {
+            const query = searchInput.value.trim().toLowerCase();
+            const selectedNetwork = networkFilter.value;
+
+            let visibleCount = 0;
+
+            cryptoItems.forEach(function (item) {
+                const symbol = item.dataset.symbol.toLowerCase();
+                const name = item.dataset.name.toLowerCase();
+                const network = item.dataset.network.toLowerCase();
+                const address = item.dataset.address.toLowerCase();
+
+                const matchesSearch =
+                    symbol.includes(query) ||
+                    name.includes(query) ||
+                    network.includes(query) ||
+                    address.includes(query);
+
+                const matchesNetwork =
+                    selectedNetwork === "all" ||
+                    item.dataset.network === selectedNetwork;
+
+                const isVisible = matchesSearch && matchesNetwork;
+
+                item.hidden = !isVisible;
+
+                if (isVisible) {
+                    visibleCount++;
+                }
+            });
+
+            assetCount.textContent =
+                visibleCount + (visibleCount === 1 ? " asset" : " assets");
+
+            emptyState.classList.toggle("visible", visibleCount === 0);
+
+            clearSearchButton.classList.toggle(
+                "visible",
+                searchInput.value.length > 0
+            );
+        }
+
+        searchInput.addEventListener("input", filterAssets);
+        networkFilter.addEventListener("change", filterAssets);
+
+        clearSearchButton.addEventListener("click", function () {
+            searchInput.value = "";
+            filterAssets();
+            searchInput.focus();
+        });
+
+        // =====================================
+        // COPY TO CLIPBOARD
+        // =====================================
+
+        async function copyText(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const temporaryInput = document.createElement("textarea");
+
+                    temporaryInput.value = text;
+                    temporaryInput.setAttribute("readonly", "");
+                    temporaryInput.style.position = "fixed";
+                    temporaryInput.style.opacity = "0";
+                    temporaryInput.style.pointerEvents = "none";
+
+                    document.body.appendChild(temporaryInput);
+                    temporaryInput.select();
+
+                    const copied = document.execCommand("copy");
+                    temporaryInput.remove();
+
+                    if (!copied) {
+                        throw new Error("Copy command failed");
+                    }
+                }
+
+                showToast("Address copied to clipboard.");
+                return true;
+            } catch (error) {
+                showToast(
+                    "Unable to copy automatically. Please select and copy the address.",
+                    false
+                );
+
+                return false;
+            }
+        }
+
+        document.querySelectorAll(".copy-button").forEach(function (button) {
+            button.addEventListener("click", async function () {
+                const item = button.closest(".crypto-item");
+                const address = item.dataset.address;
+
+                const copied = await copyText(address);
+
+                if (copied) {
+                    const icon = button.querySelector("i");
+
+                    button.classList.add("copied");
+                    icon.className = "fa-solid fa-check";
+
+                    setTimeout(function () {
+                        button.classList.remove("copied");
+                        icon.className = "fa-regular fa-copy";
+                    }, 1800);
+                }
+            });
+        });
+
+        // =====================================
+        // QR CODE MODAL
+        // =====================================
+
+        function openQrModal(item) {
+            currentAsset = item;
+            lastFocusedElement = document.activeElement;
+
+            const symbol = item.dataset.symbol;
+            const name = item.dataset.name;
+            const network = item.dataset.network;
+            const address = item.dataset.address;
+            const logo = item.dataset.logo;
+
+            modalTitle.textContent = "Receive " + symbol;
+            modalNetwork.textContent = network;
+            modalLogo.src = logo;
+            modalLogo.alt = name + " logo";
+            modalAddress.textContent = address;
+
+            qrCodeContainer.replaceChildren();
+
+            qrModal.classList.add("open");
+            qrModal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+
+            if (typeof QRCode === "undefined") {
+                qrCodeContainer.textContent =
+                    "QR code library unavailable. Check your internet connection.";
+
+                showToast("Unable to load the QR code library.", false);
+            } else {
+                new QRCode(qrCodeContainer, {
+                    text: address,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#172033",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+
+            closeModalButton.focus();
+        }
+
+        function closeQrModal() {
+            qrModal.classList.remove("open");
+            qrModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+
+            currentAsset = null;
+
+            if (
+                lastFocusedElement &&
+                document.contains(lastFocusedElement)
+            ) {
+                lastFocusedElement.focus();
+            }
+        }
+
+        document.querySelectorAll(".qr-button").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const item = button.closest(".crypto-item");
+                openQrModal(item);
+            });
+        });
+
+        closeModalButton.addEventListener("click", closeQrModal);
+
+        qrModal.addEventListener("click", function (event) {
+            if (event.target === qrModal) {
+                closeQrModal();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && qrModal.classList.contains("open")) {
+                closeQrModal();
+            }
+        });
+
+        modalCopyButton.addEventListener("click", async function () {
+            if (!currentAsset) {
+                return;
+            }
+
+            const copied = await copyText(currentAsset.dataset.address);
+
+            if (copied) {
+                modalCopyButton.innerHTML =
+                    '<i class="fa-solid fa-check"></i> Copied';
+
+                setTimeout(function () {
+                    modalCopyButton.innerHTML =
+                        '<i class="fa-regular fa-copy"></i> Copy address';
+                }, 1800);
+            }
+        });
+
+        // =====================================
+        // INITIALIZE
+        // =====================================
+
+        filterAssets();
+    </script>
+
+</body>
+
+</html>

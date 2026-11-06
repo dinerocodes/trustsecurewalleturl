@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto Wallet- Trust wallet</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            /* blue border effect */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            height: 50rem;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            width: 80px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        p.sub {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #00cc66;
+            background-color: #eefdf5;
+        }
+
+        .option.green-border {
+            border: 2px solid #2ecc71;
+            background-color: #e6f9ed;
+        }
+
+        .option-text {
+            text-align: left;
+        }
+
+        .option-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .option-subtitle {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .arrow {
+            font-size: 18px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <img src="./tw.png" alt="Trust Logo" class="logo">
+        <h1>Welcome to the Trust Wallet Extension</h1>
+        <p class="sub">The multi-chain wallet trusted by millions</p>
+
+        <div class="option">
+            <div class="option-text">
+                <div class="option-title">Create a new wallet</div>
+                <div class="option-subtitle">Start fresh with a new wallet</div>
+            </div>
+            <div class="arrow">→</div>
+        </div>
+
+        <div class="option">
+            <div class="option-text">
+                <div class="option-title">Import or recover wallet</div>
+                <div class="option-subtitle">Import with your Secret Phrase</div>
+            </div>
+            <div class="arrow">→</div>
+        </div>
+
+        <div class="option">
+            <div class="option-text">
+                <div class="option-title">Ledger</div>
+                <div class="option-subtitle">Connect your Ledger wallet</div>
+            </div>
+            <div class="arrow">→</div>
+        </div>
+    </div>
+
+</body>
+
+</html>
